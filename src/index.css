@@ -1,0 +1,146 @@
+/*
+ * Design tokens (per PLAN.md §6): all UI styling flows through these
+ * custom properties so a future visual pass is additive, not surgical.
+ */
+:root {
+  --paper: #f4f1ea;
+  --ink: #1c1a17;
+  --ink-muted: #5b5650;
+  --border: #d8d2c4;
+  --accent: #8a1f1f;
+
+  --accent-faction-moderate: #3b5b8c;
+  --accent-faction-hardliner: #8a1f1f;
+  --accent-faction-labor: #b6862c;
+  --accent-faction-student: #4f7c4a;
+
+  --font-body: Georgia, 'Times New Roman', serif;
+  --font-display: 'Arial Black', Impact, sans-serif;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+
+  font: 18px/145% var(--font-body);
+  color: var(--ink);
+  background: var(--paper);
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+#app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-4);
+  display: grid;
+  /* Named layout regions per PLAN.md §6 — #map-slot is reserved, unused for now. */
+  grid-template-areas:
+    'dispatch'
+    'ledger'
+    'coalition'
+    'map-slot'
+    'actions';
+  gap: var(--space-4);
+}
+
+h1 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--space-2);
+}
+
+#dispatch {
+  grid-area: dispatch;
+}
+
+#ledger {
+  grid-area: ledger;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+}
+
+#map-slot {
+  grid-area: map-slot;
+}
+
+#actions {
+  grid-area: actions;
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.resource {
+  border: 1px solid var(--border);
+  padding: var(--space-2);
+}
+
+.resource .label {
+  font-size: 14px;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.resource .value {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.bar {
+  height: 4px;
+  background: var(--border);
+  margin-top: var(--space-1);
+}
+
+.bar > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+button {
+  font: inherit;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+#log {
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-2);
+  font-size: 15px;
+  color: var(--ink-muted);
+}
+
+#log p {
+  margin: 0 0 var(--space-1);
+}
+
+.status-banner {
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: var(--space-2);
+  font-weight: bold;
+}

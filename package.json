@@ -1,0 +1,25 @@
+{
+  "name": "revolution",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "sim": "tsx scripts/balance-sim.ts"
+  },
+  "dependencies": {
+    "preact": "^10.29.1"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.5",
+    "@types/node": "^24.12.3",
+    "tsx": "^4.19.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.0.12",
+    "vitest": "^3.0.0"
+  }
+}
