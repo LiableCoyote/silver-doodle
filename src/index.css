@@ -47,7 +47,8 @@ body {
     'ledger'
     'coalition'
     'map-slot'
-    'actions';
+    'actions'
+    'log';
   gap: var(--space-4);
 }
 
@@ -127,7 +128,69 @@ button:disabled {
   cursor: default;
 }
 
+#coalition {
+  grid-area: coalition;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.faction {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--border);
+  padding: var(--space-2) var(--space-3);
+}
+
+.faction-moderates {
+  border-left-color: var(--accent-faction-moderate);
+}
+.faction-hardliners {
+  border-left-color: var(--accent-faction-hardliner);
+}
+.faction-labor {
+  border-left-color: var(--accent-faction-labor);
+}
+.faction-students {
+  border-left-color: var(--accent-faction-student);
+}
+
+.faction-name {
+  font-size: 14px;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.faction-line {
+  margin: var(--space-1) 0;
+  font-style: italic;
+}
+
+.faction-moderates .mood-bar > span {
+  background: var(--accent-faction-moderate);
+}
+.faction-hardliners .mood-bar > span {
+  background: var(--accent-faction-hardliner);
+}
+.faction-labor .mood-bar > span {
+  background: var(--accent-faction-labor);
+}
+.faction-students .mood-bar > span {
+  background: var(--accent-faction-student);
+}
+
+.departure {
+  border-left: 4px solid var(--accent);
+  padding: var(--space-2) var(--space-3);
+  background: rgba(138, 31, 31, 0.06);
+}
+
+.reaction {
+  font-style: italic;
+  color: var(--ink-muted);
+}
+
 #log {
+  grid-area: log;
   border-top: 1px solid var(--border);
   padding-top: var(--space-2);
   font-size: 15px;

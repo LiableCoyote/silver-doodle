@@ -1,7 +1,13 @@
+import type { FactionState } from './factions';
+import { createFactions } from './factions';
+
 /**
- * The seven resources from the design brief. All are held on 0-100 scales
+ * The resource economy from the design brief. All are held on 0-100 scales
  * except cadre and materiel, which are unbounded "stockpile" counts —
  * keeping their ceilings open is what makes "spend cadre" a real cost.
+ *
+ * Cohesion is NOT stored here: it is derived from faction moods
+ * (see cohesion() in formulas.ts) — the coalition is the mechanic.
  */
 export interface Resources {
   /** Narrative capital. Gates recruitment, raises defection odds. Volatile. */
@@ -14,8 +20,6 @@ export interface Resources {
   materiel: number;
   /** Accumulated regime attention, 0-100. High heat triggers raids. */
   heat: number;
-  /** Internal ideological unity, 0-100. Hits 0 -> the movement splits. */
-  cohesion: number;
   /** The world's master clock, 0-100. Decays toward stability each turn. */
   grievance: number;
 }
@@ -24,15 +28,27 @@ export type GameStatus =
   | 'active'
   | 'decapitated' // cadre hit zero under raids
   | 'irrelevant' // grievance decayed away — the window closed
-  | 'split' // cohesion hit zero
+  | 'split' // a split left less than a coalition standing
   | 'cascade'; // proxy win condition until milestone 4's real loyalty system
+
+/**
+ * Structured record of a turn's notable happenings. The engine logs facts;
+ * the content layer (src/content) turns them into prose.
+ */
+export interface TurnEvent {
+  turn: number;
+  kind: 'action' | 'raid' | 'split';
+  detail: string;
+  /** For 'split': which faction departed. */
+  factionId?: FactionState['id'];
+}
 
 export interface GameState {
   turn: number;
   resources: Resources;
+  factions: FactionState[];
   status: GameStatus;
-  /** Plain-text turn-by-turn log; replaced by the writing system in milestone 3. */
-  log: string[];
+  log: TurnEvent[];
 }
 
 export const STARTING_RESOURCES: Resources = {
@@ -41,14 +57,17 @@ export const STARTING_RESOURCES: Resources = {
   sympathizers: 50,
   materiel: 30,
   heat: 0,
-  cohesion: 50,
   grievance: 70,
 };
 
-export function createInitialState(overrides: Partial<Resources> = {}): GameState {
+export function createInitialState(
+  overrides: Partial<Resources> = {},
+  factions: FactionState[] = createFactions(),
+): GameState {
   return {
     turn: 0,
     resources: { ...STARTING_RESOURCES, ...overrides },
+    factions,
     status: 'active',
     log: [],
   };

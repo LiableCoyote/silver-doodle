@@ -16,7 +16,7 @@ describe('step', () => {
     expect(result.turn).toBe(1);
   });
 
-  it('keeps resources within their bounds', () => {
+  it('keeps resources and moods within their bounds', () => {
     let state = createInitialState();
     const rng = createRng(123);
     for (let i = 0; i < 50; i++) {
@@ -27,6 +27,18 @@ describe('step', () => {
     expect(state.resources.heat).toBeLessThanOrEqual(100);
     expect(state.resources.cadre).toBeGreaterThanOrEqual(0);
     expect(state.resources.materiel).toBeGreaterThanOrEqual(0);
+    for (const f of state.factions) {
+      expect(f.mood).toBeGreaterThanOrEqual(0);
+      expect(f.mood).toBeLessThanOrEqual(100);
+    }
+  });
+
+  it('actions shift faction moods asymmetrically', () => {
+    const before = createInitialState();
+    const after = step(before, ACTIONS.agitate, createRng(1));
+    const mood = (s: typeof after, id: string) => s.factions.find((f) => f.id === id)!.mood;
+    expect(mood(after, 'hardliners')).toBeGreaterThan(mood(before, 'hardliners'));
+    expect(mood(after, 'moderates')).toBeLessThan(mood(before, 'moderates'));
   });
 
   it('grievance decays toward zero when the player stalls', () => {
@@ -47,8 +59,8 @@ describe('step', () => {
   it('does not advance once a terminal status is reached', () => {
     let state = createInitialState({ cadre: 1, heat: 95 });
     const rng = createRng(2);
-    // Force a raid by spamming agitate at very high heat until decapitated.
-    for (let i = 0; i < 20; i++) {
+    // Agitate spam ends one way or another: splits, raids, or the window closing.
+    for (let i = 0; i < 100 && state.status === 'active'; i++) {
       state = step(state, ACTIONS.agitate, rng);
     }
     expect(state.status).not.toBe('active');
@@ -61,7 +73,7 @@ describe('step', () => {
     let raided = false;
     for (let seed = 0; seed < 50; seed++) {
       const result = step(state, ACTIONS.lay_low, createRng(seed));
-      if (result.log.some((line) => line.includes('raided'))) raided = true;
+      if (result.log.some((e) => e.kind === 'raid')) raided = true;
     }
     expect(raided).toBe(true);
   });
