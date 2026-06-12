@@ -9,6 +9,7 @@
  *  - crackdown cards: exactly one martyrConversion choice, and repeatable
  */
 import type { Condition, Range } from '../src/engine/events';
+import { ART_KEYS } from '../src/content/art';
 import { DECK, EPILOGUE_FLAGS } from '../src/content/events';
 import { ENGINE_READ_FLAGS } from '../src/engine/loyalty';
 import { CRACKDOWN_FLAG } from '../src/engine/reducer';
@@ -88,6 +89,15 @@ for (const card of DECK) {
       errors.push(`${card.id}: crackdown cards must be repeatable (once: false)`);
     }
   }
+}
+
+// Art coverage: every card art key must have a drawn scene; unused scenes warn.
+const usedArt = new Set(DECK.flatMap((c) => (c.art ? [c.art] : [])));
+for (const key of usedArt) {
+  if (!ART_KEYS.includes(key)) errors.push(`art key "${key}" has no scene in src/content/art.tsx`);
+}
+for (const key of ART_KEYS) {
+  if (!usedArt.has(key)) warnings.push(`art scene "${key}" is drawn but used by no card`);
 }
 
 for (const flag of flagsRead) {

@@ -12,6 +12,8 @@ import { reactionLine, voiceLine, VOICES } from './content/factions';
 import { APPARATUS, finaleBeats, intelligenceLine } from './content/apparatus';
 import { generateEpilogue } from './content/epilogue';
 import { composeDispatch } from './content/dispatch';
+import { EVENT_ART } from './content/art';
+import { CityMap } from './content/map';
 
 const SAVE_KEY = 'revolution-save-v1';
 
@@ -332,6 +334,14 @@ export function App() {
         {lastOutcome && !isOver && <p class="event-outcome">{lastOutcome}</p>}
         {pendingCard && !isOver && (
           <div class="event-card" data-art={pendingCard.art}>
+            {pendingCard.art && EVENT_ART[pendingCard.art] && (
+              <div class="event-art">
+                {(() => {
+                  const Art = EVENT_ART[pendingCard.art!];
+                  return <Art />;
+                })()}
+              </div>
+            )}
             <p class="event-prose">{selectProse(pendingCard.prose, state)}</p>
             <div class="event-choices">
               {pendingCard.choices.map((choice) => {
@@ -424,6 +434,9 @@ export function App() {
       </div>
 
       <div id="map-slot">
+        <div class="map-frame">
+          <CityMap state={state} />
+        </div>
         <div id="apparatus">
           {state.units.map((unit) => (
             <div class={`unit ${unit.refused ? 'unit-refused' : ''}`} key={unit.id}>

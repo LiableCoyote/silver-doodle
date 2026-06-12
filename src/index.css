@@ -73,6 +73,32 @@ h1 {
 
 #map-slot {
   grid-area: map-slot;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.map-frame {
+  border: 1px solid var(--border);
+  padding: var(--space-2);
+}
+
+.map-frame svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--ink);
+}
+
+.event-art {
+  margin-bottom: var(--space-3);
+}
+
+.event-art svg {
+  display: block;
+  width: 100%;
+  max-height: 160px;
+  height: auto;
+  color: var(--ink);
 }
 
 #apparatus {
