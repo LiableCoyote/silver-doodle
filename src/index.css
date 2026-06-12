@@ -257,3 +257,59 @@ button:disabled {
   padding: var(--space-2);
   font-weight: bold;
 }
+
+.dispatch-line {
+  color: var(--ink-muted);
+}
+
+.epilogue h2 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  margin: var(--space-4) 0 var(--space-2);
+}
+
+.epilogue .departure {
+  margin-bottom: var(--space-2);
+}
+
+/* Per-ideology accent palettes (PLAN.md §6) — populist keeps the default. */
+#app[data-ideology='vanguard'] {
+  --accent: #1f3a8a;
+}
+#app[data-ideology='religious'] {
+  --accent: #7a5c1f;
+}
+
+#title {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  display: grid;
+  gap: var(--space-4);
+}
+
+#title h1 {
+  font-size: 40px;
+}
+
+.ideology-cards {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.ideology-card {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ideology-card button {
+  justify-self: start;
+}
+
+.ideology-hint {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}

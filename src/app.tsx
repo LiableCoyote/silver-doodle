@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import { ACTIONS, type ActionType } from './engine/actions';
 import { matches, resolveEvent, selectProse } from './engine/events';
 import { presentFactions } from './engine/factions';
@@ -7,9 +7,22 @@ import { createRng } from './engine/rng';
 import { step } from './engine/reducer';
 import { createInitialState, type GameState, type Resources } from './engine/state';
 import { DECK } from './content/events';
-import { createIdeologyFactions, createIdeologyResources } from './content/ideologies';
+import { createIdeologyFactions, createIdeologyResources, IDEOLOGIES, type IdeologyId } from './content/ideologies';
 import { reactionLine, voiceLine, VOICES } from './content/factions';
 import { APPARATUS, finaleBeats, intelligenceLine } from './content/apparatus';
+import { generateEpilogue } from './content/epilogue';
+import { composeDispatch } from './content/dispatch';
+
+const SAVE_KEY = 'revolution-save-v1';
+
+const RESOURCE_TOOLTIPS: Record<keyof Resources, string> = {
+  legitimacy: 'Narrative capital. Gates recruitment and feeds defection odds — it can compound for acts and crash overnight.',
+  cadre: 'The disciplined core. Quality over quantity, spent on operations and lost to raids.',
+  sympathizers: 'Mass support. Large and unreliable — it decays without attention and converts to cadre slowly.',
+  materiel: 'Money, presses, safehouses. The boring layer that actually wins; most failed runs die here.',
+  heat: 'The regime\'s attention. Past 70, raids come.',
+  grievance: 'The open window. When it closes, the revolution is over whether you noticed or not.',
+};
 
 const RESOURCE_LABELS: Record<keyof Resources, string> = {
   legitimacy: 'Legitimacy',
@@ -48,6 +61,25 @@ function scenarioState(): GameState | undefined {
     createIdeologyFactions('populist'),
   );
   switch (scenario) {
+    case 'epilogue':
+      // The densest epilogue: a cascade win with every debt flag set, the
+      // hardliners in open opposition, and the students gone.
+      return {
+        ...base,
+        turn: 40,
+        status: 'cascade',
+        flags: ['guarantees-given', 'reprisal-lists', 'armed-wing', 'negotiation-channel'],
+        factions: base.factions.map((f) =>
+          f.id === 'hardliners'
+            ? { ...f, mood: 20 }
+            : f.id === 'students'
+              ? { ...f, present: false }
+              : f,
+        ),
+        units: base.units.map((u) =>
+          u.id === 'garrison' || u.id === 'police' ? { ...u, refused: true, loyalty: 10 } : u,
+        ),
+      };
     case 'massacre-low':
       return {
         ...base,
@@ -93,28 +125,68 @@ function scenarioState(): GameState | undefined {
   }
 }
 
-function makeGame(seed: number) {
+interface SavedGame {
+  state: GameState;
+  ideology: IdeologyId;
+}
+
+function loadSave(): SavedGame | undefined {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return undefined;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object' || !parsed.state || !parsed.ideology) return undefined;
+    return parsed as SavedGame;
+  } catch {
+    return undefined;
+  }
+}
+
+function clearSave() {
+  try {
+    localStorage.removeItem(SAVE_KEY);
+  } catch {
+    // ignore — storage may be unavailable
+  }
+}
+
+function makeGame(seed: number, ideology: IdeologyId) {
   return {
     state: scenarioState() ?? createInitialState(
-      createIdeologyResources('populist'),
-      createIdeologyFactions('populist'),
+      createIdeologyResources(ideology),
+      createIdeologyFactions(ideology),
     ),
+    ideology,
     rng: createRng(seed),
     lastAction: undefined as ActionType | undefined,
     lastOutcome: undefined as string | undefined,
+    lastDispatch: undefined as string | undefined,
   };
 }
 
+const IDEOLOGY_HINTS: Record<IdeologyId, string> = {
+  populist: 'Sympathizers 60 · Cadre 6 · Cohesion polarized',
+  vanguard: 'Sympathizers 20 · Cadre 18 · Cohesion tight',
+  religious: 'Sympathizers 35 · Cadre 10 · Legitimacy 40, no students',
+};
+
 export function App() {
-  const [game, setGame] = useState(() => makeGame(Date.now()));
+  const isScenario = !!new URLSearchParams(window.location.search).get('scenario');
+  const [screen, setScreen] = useState<'title' | 'game'>(() => (isScenario ? 'game' : 'title'));
+  const [game, setGame] = useState(() => makeGame(Date.now(), 'populist'));
+  const [hasSave, setHasSave] = useState(() => !isScenario && !!loadSave());
 
   const act = (type: ActionType) => {
-    setGame((current) => ({
-      ...current,
-      state: step(current.state, ACTIONS[type], current.rng, DECK),
-      lastAction: type,
-      lastOutcome: undefined,
-    }));
+    setGame((current) => {
+      const nextState = step(current.state, ACTIONS[type], current.rng, DECK);
+      return {
+        ...current,
+        state: nextState,
+        lastAction: type,
+        lastOutcome: undefined,
+        lastDispatch: composeDispatch(current.state, nextState),
+      };
+    });
   };
 
   const choose = (choiceId: string) => {
@@ -132,18 +204,96 @@ export function App() {
     });
   };
 
-  const restart = () => setGame(makeGame(Date.now()));
+  const begin = (ideology: IdeologyId) => {
+    clearSave();
+    setHasSave(false);
+    setGame(makeGame(Date.now(), ideology));
+    setScreen('game');
+  };
 
-  const { state, lastAction, lastOutcome } = game;
+  const continueGame = () => {
+    const saved = loadSave();
+    if (!saved) return;
+    setGame({
+      state: saved.state,
+      ideology: saved.ideology,
+      rng: createRng(Date.now()),
+      lastAction: undefined,
+      lastOutcome: undefined,
+      lastDispatch: undefined,
+    });
+    setScreen('game');
+  };
+
+  const restart = () => {
+    clearSave();
+    setHasSave(false);
+    setScreen('title');
+  };
+
+  // Persist on every state change, once the game is underway — terminal
+  // states are saved too, so the epilogue survives a refresh. Scenario
+  // states (?scenario=) are dev-only and never persisted.
+  useEffect(() => {
+    if (screen !== 'game' || isScenario) return;
+    try {
+      localStorage.setItem(SAVE_KEY, JSON.stringify({ state: game.state, ideology: game.ideology }));
+      setHasSave(true);
+    } catch {
+      // ignore — storage may be unavailable
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [game.state, screen]);
+
+  const { state, ideology, lastAction, lastOutcome, lastDispatch } = game;
+
+  // Per-ideology accent palette (see index.css) — set on the mount element,
+  // since App renders as a fragment inside #app.
+  useEffect(() => {
+    const root = document.getElementById('app');
+    if (!root) return;
+    root.setAttribute('data-ideology', screen === 'title' ? 'populist' : ideology);
+  }, [screen, ideology]);
+
+  // Voice lines re-roll only when the turn changes, not on every render.
+  // Computed unconditionally (hooks can't follow the title-screen branch).
+  const voiceRng = useMemo(() => createRng(state.turn * 7919 + 17), [state.turn]);
+
+  if (screen === 'title') {
+    return (
+      <div id="title">
+        <h1>Revolution</h1>
+        <p>
+          You manage a revolutionary movement's commitment and visibility — not its
+          buildings or its armies. Every turn spends people: organizing, agitating,
+          raising money, going quiet, or reaching the officers who might one day refuse
+          an order. You win when the garrisons stand aside, a tipping point you spend the
+          whole game setting up. Every path there has a price, and the morning after
+          keeps the receipt.
+        </p>
+        <div class="ideology-cards">
+          {(Object.keys(IDEOLOGIES) as IdeologyId[]).map((id) => {
+            const def = IDEOLOGIES[id];
+            return (
+              <div class="faction ideology-card" key={id}>
+                <div class="faction-name">{def.name}</div>
+                <p class="faction-line">{def.blurb}</p>
+                <p class="ideology-hint">{IDEOLOGY_HINTS[id]}</p>
+                <button onClick={() => begin(id)}>Begin</button>
+              </div>
+            );
+          })}
+        </div>
+        {hasSave && <button onClick={continueGame}>Continue</button>}
+      </div>
+    );
+  }
   const isOver = state.status !== 'active';
   const pendingCard = state.pendingEventId
     ? DECK.find((c) => c.id === state.pendingEventId)
     : undefined;
   const present = presentFactions(state.factions);
   const currentCohesion = cohesion(state.factions);
-
-  // Voice lines re-roll only when the turn changes, not on every render.
-  const voiceRng = useMemo(() => createRng(state.turn * 7919 + 17), [state.turn]);
   const voices = present.map((f) => ({ faction: f, line: voiceLine(f, voiceRng) }));
 
   const reaction = lastAction
@@ -162,6 +312,7 @@ export function App() {
       <div id="dispatch">
         <h1>Revolution</h1>
         <p>Turn {state.turn}</p>
+        {lastDispatch && !isOver && <p class="dispatch-line">{lastDispatch}</p>}
         {departures.map((e) => (
           <p class="departure" key={e.detail}>
             {VOICES[e.factionId!].departure}
@@ -201,6 +352,16 @@ export function App() {
             </p>
           ))}
         {isOver && <p class="status-banner">{STATUS_TEXT[state.status]}</p>}
+        {isOver && (
+          <div class="epilogue">
+            <h2>The Morning After</h2>
+            {generateEpilogue(state).beats.map((beat, i) => (
+              <p class="departure" key={i}>
+                {beat}
+              </p>
+            ))}
+          </div>
+        )}
       </div>
 
       <div id="ledger">
@@ -208,7 +369,7 @@ export function App() {
           const value = state.resources[key];
           const isPercent = key !== 'cadre' && key !== 'materiel';
           return (
-            <div class="resource" key={key}>
+            <div class="resource" key={key} title={RESOURCE_TOOLTIPS[key]}>
               <div class="label">{RESOURCE_LABELS[key]}</div>
               <div class="value">{Math.round(value)}</div>
               {isPercent && (
