@@ -26,6 +26,7 @@
   color: var(--ink);
   background: var(--paper);
   color-scheme: light;
+  -webkit-text-size-adjust: 100%;
 }
 
 * {
@@ -34,6 +35,7 @@
 
 body {
   margin: 0;
+  overscroll-behavior-y: contain;
 }
 
 #app {
@@ -111,6 +113,14 @@ h1 {
 .resource {
   border: 1px solid var(--border);
   padding: var(--space-2);
+  cursor: help;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.resource-note {
+  margin-top: var(--space-1);
+  font-size: 14px;
+  color: var(--ink-muted);
 }
 
 .resource .label {
@@ -144,6 +154,9 @@ button {
   background: var(--paper);
   color: var(--ink);
   cursor: pointer;
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button:hover:not(:disabled) {
@@ -286,6 +299,32 @@ button:disabled {
   grid-row: 1 / -1;
   display: grid;
   gap: var(--space-4);
+}
+
+/* Small screens: tighter rhythm, thumb-sized decisions, notch-safe padding. */
+@media (max-width: 480px) {
+  :root {
+    --space-4: 16px;
+    font-size: 16px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  #title h1 {
+    font-size: 32px;
+  }
+
+  #app {
+    padding-left: max(var(--space-3), env(safe-area-inset-left));
+    padding-right: max(var(--space-3), env(safe-area-inset-right));
+    padding-bottom: max(var(--space-4), env(safe-area-inset-bottom));
+  }
+
+  .event-choices button {
+    flex: 1 1 100%;
+  }
 }
 
 #title h1 {

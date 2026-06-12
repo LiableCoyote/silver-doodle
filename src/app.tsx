@@ -24,6 +24,9 @@ const RESOURCE_TOOLTIPS: Record<keyof Resources, string> = {
   grievance: 'The open window. When it closes, the revolution is over whether you noticed or not.',
 };
 
+const COHESION_TOOLTIP =
+  'Mean of faction moods, minus a penalty for the spread. Polarization kills coalitions, not unhappiness.';
+
 const RESOURCE_LABELS: Record<keyof Resources, string> = {
   legitimacy: 'Legitimacy',
   cadre: 'Cadre',
@@ -175,6 +178,8 @@ export function App() {
   const [screen, setScreen] = useState<'title' | 'game'>(() => (isScenario ? 'game' : 'title'));
   const [game, setGame] = useState(() => makeGame(Date.now(), 'populist'));
   const [hasSave, setHasSave] = useState(() => !isScenario && !!loadSave());
+  // Tap-to-toggle ledger note — hover tooltips don't exist on touch.
+  const [openNote, setOpenNote] = useState<keyof Resources | 'cohesion' | null>(null);
 
   const act = (type: ActionType) => {
     setGame((current) => {
@@ -369,7 +374,14 @@ export function App() {
           const value = state.resources[key];
           const isPercent = key !== 'cadre' && key !== 'materiel';
           return (
-            <div class="resource" key={key} title={RESOURCE_TOOLTIPS[key]}>
+            <div
+              class="resource"
+              key={key}
+              title={RESOURCE_TOOLTIPS[key]}
+              role="button"
+              aria-expanded={openNote === key}
+              onClick={() => setOpenNote(openNote === key ? null : key)}
+            >
               <div class="label">{RESOURCE_LABELS[key]}</div>
               <div class="value">{Math.round(value)}</div>
               {isPercent && (
@@ -377,15 +389,23 @@ export function App() {
                   <span style={{ width: `${Math.min(100, value)}%` }} />
                 </div>
               )}
+              {openNote === key && <p class="resource-note">{RESOURCE_TOOLTIPS[key]}</p>}
             </div>
           );
         })}
-        <div class="resource" title="Mean of faction moods, minus a penalty for the spread. Polarization kills coalitions, not unhappiness.">
+        <div
+          class="resource"
+          title={COHESION_TOOLTIP}
+          role="button"
+          aria-expanded={openNote === 'cohesion'}
+          onClick={() => setOpenNote(openNote === 'cohesion' ? null : 'cohesion')}
+        >
           <div class="label">Cohesion</div>
           <div class="value">{Math.round(currentCohesion)}</div>
           <div class="bar">
             <span style={{ width: `${Math.max(0, Math.min(100, currentCohesion))}%` }} />
           </div>
+          {openNote === 'cohesion' && <p class="resource-note">{COHESION_TOOLTIP}</p>}
         </div>
       </div>
 

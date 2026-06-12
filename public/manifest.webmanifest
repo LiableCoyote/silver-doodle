@@ -1,0 +1,16 @@
+{
+  "name": "Revolution",
+  "short_name": "Revolution",
+  "description": "A strategy game about how movements rise, win, and devour themselves.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f4f1ea",
+  "theme_color": "#f4f1ea",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
