@@ -37,7 +37,7 @@ export type GameStatus =
  */
 export interface TurnEvent {
   turn: number;
-  kind: 'action' | 'raid' | 'split';
+  kind: 'action' | 'raid' | 'split' | 'event';
   detail: string;
   /** For 'split': which faction departed. */
   factionId?: FactionState['id'];
@@ -48,6 +48,14 @@ export interface GameState {
   resources: Resources;
   factions: FactionState[];
   status: GameStatus;
+  /** Campaign memory: set and read by event cards. */
+  flags: string[];
+  /** Once-only cards that have already fired. */
+  firedEvents: string[];
+  /** An event awaiting the player's choice; blocks the next action. */
+  pendingEventId?: string;
+  /** Consecutive turns the cascade conditions have held (see formulas.ts). */
+  cascadeMomentum: number;
   log: TurnEvent[];
 }
 
@@ -69,6 +77,10 @@ export function createInitialState(
     resources: { ...STARTING_RESOURCES, ...overrides },
     factions,
     status: 'active',
+    flags: [],
+    firedEvents: [],
+    pendingEventId: undefined,
+    cascadeMomentum: 0,
     log: [],
   };
 }

@@ -107,21 +107,25 @@ export interface RaidResult {
   cadreLoss: number;
   materielLoss: number;
   heatRelief: number;
-  legitimacyLoss: number;
 }
 
 /**
- * Until the repression dial lands (milestone 3), arrests read as
- * criminality: raids cost legitimacy. The dial will let accumulated
- * legitimacy convert this loss into martyrdom instead.
+ * The repression dial's engine: escalating publicly converts a crackdown
+ * into legitimacy only if accumulated legitimacy is high enough to frame
+ * the story. Linear, break-even at 45 — at legit 80 the martyrs gain you
+ * ~+12; at legit 25 the same dead read as chaos and cost you ~7.
  */
-export const RAID_LEGITIMACY_LOSS = 8;
+export const MARTYR_BREAK_EVEN = 45;
+
+export function martyrConversion(legitimacy: number): number {
+  return Math.round((legitimacy - MARTYR_BREAK_EVEN) / 3);
+}
 
 /** Rolls for a regime raid given current heat. Raids hurt, but reset heat. */
 export function rollRaid(heat: number, cadre: number, materiel: number, rng: RNG): RaidResult {
   const probability = raidProbability(heat);
   if (rng() >= probability) {
-    return { occurred: false, cadreLoss: 0, materielLoss: 0, heatRelief: 0, legitimacyLoss: 0 };
+    return { occurred: false, cadreLoss: 0, materielLoss: 0, heatRelief: 0 };
   }
   const severity = 0.2 + rng() * 0.2; // 20-40% of stockpiles
   return {
@@ -130,7 +134,6 @@ export function rollRaid(heat: number, cadre: number, materiel: number, rng: RNG
     cadreLoss: cadre > 0 ? Math.max(1, Math.round(cadre * severity)) : 0,
     materielLoss: Math.round(materiel * severity),
     heatRelief: 30,
-    legitimacyLoss: RAID_LEGITIMACY_LOSS,
   };
 }
 
@@ -138,15 +141,17 @@ export const CASCADE_TURN_THRESHOLD = 40;
 export const CASCADE_LEGITIMACY_THRESHOLD = 80;
 export const CASCADE_HEAT_CEILING = 60;
 export const CASCADE_COHESION_FLOOR = 40;
+/** Consecutive qualifying turns before the garrisons commit. */
+export const CASCADE_MOMENTUM_REQUIRED = 3;
 
 /**
- * Placeholder win check until milestone 4's loyalty-cascade system lands:
- * sustaining high legitimacy under manageable heat for long enough reads
- * as "the security apparatus is starting to turn." The coalition must
- * still be holding together — garrisons don't defect to a movement
- * visibly at war with itself.
+ * Placeholder win check until milestone 4's loyalty-cascade system lands.
+ * A turn "qualifies" when the movement visibly holds the city: high
+ * legitimacy, manageable heat, a coalition not at war with itself.
+ * Garrisons defect to movements that hold that state, not ones that
+ * flicker across the line — hence the momentum requirement.
  */
-export function checkCascade(
+export function cascadeQualifies(
   resources: Resources,
   factions: FactionState[],
   turn: number,

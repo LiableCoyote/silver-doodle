@@ -1,10 +1,13 @@
 import type { Action } from './actions';
+import type { EventCard } from './events';
+import { drawEvent } from './events';
 import type { FactionState } from './factions';
 import { clampMood, driftMood, presentFactions } from './factions';
 import {
+  CASCADE_MOMENTUM_REQUIRED,
+  cascadeQualifies,
   clampResources,
   cohesion,
-  checkCascade,
   EFFECTS,
   informantProbability,
   MOOD_EFFECTS,
@@ -16,6 +19,16 @@ import {
 } from './formulas';
 import type { RNG } from './rng';
 import type { GameState, Resources, TurnEvent } from './state';
+
+/**
+ * Set by the reducer when a raid lands; crackdown (dial) cards trigger on
+ * it, and resolving any event clears it. This is how the regime's violence
+ * reaches the player as a choice instead of a stat line.
+ */
+export const CRACKDOWN_FLAG = 'crackdown';
+
+/** Chance an ordinary eligible card is drawn on a given turn. */
+export const EVENT_DRAW_CHANCE = 0.6;
 
 function applyEffects(resources: Resources, effects: Partial<Resources>): Resources {
   const next = { ...resources };
@@ -107,11 +120,19 @@ function resolveSplit(
  * stream always produce the same result, which is what makes campaigns
  * replayable from a seed + action log.
  */
-export function step(state: GameState, action: Action, rng: RNG): GameState {
+export function step(
+  state: GameState,
+  action: Action,
+  rng: RNG,
+  deck: EventCard[] = [],
+): GameState {
   if (state.status !== 'active') return state;
+  // An event is on the table: the movement decides that first.
+  if (state.pendingEventId !== undefined) return state;
 
   const turn = state.turn + 1;
   const log = [...state.log];
+  let flags = state.flags;
 
   let resources = applyEffects(state.resources, EFFECTS[action.type]);
   resources = applyPassive(resources);
@@ -126,9 +147,9 @@ export function step(state: GameState, action: Action, rng: RNG): GameState {
       cadre: resources.cadre - raid.cadreLoss,
       materiel: resources.materiel - raid.materielLoss,
       heat: resources.heat - raid.heatRelief,
-      legitimacy: resources.legitimacy - raid.legitimacyLoss,
     };
     factions = applyMoods(factions, RAID_MOOD_EFFECTS);
+    if (!flags.includes(CRACKDOWN_FLAG)) flags = [...flags, CRACKDOWN_FLAG];
     log.push({
       turn,
       kind: 'raid',
@@ -147,15 +168,45 @@ export function step(state: GameState, action: Action, rng: RNG): GameState {
 
   resources = clampResources(resources);
 
+  const cascadeMomentum = cascadeQualifies(resources, factions, turn)
+    ? state.cascadeMomentum + 1
+    : 0;
+
   // Cascade is checked first: once the tipping point is reached, the
   // movement has already won regardless of what its other clocks read.
   let status: GameState['status'] = 'active';
-  if (checkCascade(resources, factions, turn)) status = 'cascade';
+  if (cascadeMomentum >= CASCADE_MOMENTUM_REQUIRED) status = 'cascade';
   else if (splitFatal) status = 'split';
   else if (resources.cadre <= 0) status = 'decapitated';
   else if (resources.grievance <= 0) status = 'irrelevant';
 
   log.push({ turn, kind: 'action', detail: action.type });
 
-  return { turn, resources, factions, status, log };
+  let next: GameState = {
+    turn,
+    resources,
+    factions,
+    status,
+    flags,
+    firedEvents: state.firedEvents,
+    pendingEventId: undefined,
+    cascadeMomentum,
+    log,
+  };
+
+  // Draw at most one event. A pending crackdown always presents itself
+  // (from the dial cards only); ordinary cards arrive at a pace that
+  // leaves room for quiet turns and never preempt a crackdown.
+  if (status === 'active') {
+    const mustDraw = flags.includes(CRACKDOWN_FLAG);
+    const pool = mustDraw
+      ? deck.filter((c) => c.trigger.flags?.includes(CRACKDOWN_FLAG))
+      : deck.filter((c) => !c.trigger.flags?.includes(CRACKDOWN_FLAG));
+    if (mustDraw || rng() < EVENT_DRAW_CHANCE) {
+      const card = drawEvent(pool, next, rng);
+      if (card) next = { ...next, pendingEventId: card.id };
+    }
+  }
+
+  return next;
 }

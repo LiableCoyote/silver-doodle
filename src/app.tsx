@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'preact/hooks';
 import { ACTIONS, type ActionType } from './engine/actions';
+import { matches, resolveEvent, selectProse } from './engine/events';
 import { presentFactions } from './engine/factions';
 import { cohesion, MOOD_EFFECTS } from './engine/formulas';
 import { createRng } from './engine/rng';
 import { step } from './engine/reducer';
 import { createInitialState, type GameState, type Resources } from './engine/state';
+import { DECK } from './content/events';
 import { createIdeologyFactions, createIdeologyResources } from './content/ideologies';
 import { reactionLine, voiceLine, VOICES } from './content/factions';
 
@@ -32,14 +34,48 @@ const ACTION_LABELS: Record<ActionType, string> = {
   lay_low: 'Lay low',
 };
 
+/**
+ * Dev tooling: ?scenario=<id> jumps straight to a state worth reviewing —
+ * lets writers see conditional prose without replaying three acts.
+ */
+function scenarioState(): GameState | undefined {
+  const scenario = new URLSearchParams(window.location.search).get('scenario');
+  if (!scenario) return undefined;
+  const base = createInitialState(
+    createIdeologyResources('populist'),
+    createIdeologyFactions('populist'),
+  );
+  switch (scenario) {
+    case 'massacre-low':
+      return {
+        ...base,
+        turn: 18,
+        resources: { ...base.resources, legitimacy: 25, heat: 60 },
+        flags: ['strike-called'],
+        pendingEventId: 'picket-massacre',
+      };
+    case 'massacre-high':
+      return {
+        ...base,
+        turn: 18,
+        resources: { ...base.resources, legitimacy: 75, heat: 60 },
+        flags: ['strike-called'],
+        pendingEventId: 'picket-massacre',
+      };
+    default:
+      return undefined;
+  }
+}
+
 function makeGame(seed: number) {
   return {
-    state: createInitialState(
+    state: scenarioState() ?? createInitialState(
       createIdeologyResources('populist'),
       createIdeologyFactions('populist'),
     ),
     rng: createRng(seed),
     lastAction: undefined as ActionType | undefined,
+    lastOutcome: undefined as string | undefined,
   };
 }
 
@@ -49,15 +85,34 @@ export function App() {
   const act = (type: ActionType) => {
     setGame((current) => ({
       ...current,
-      state: step(current.state, ACTIONS[type], current.rng),
+      state: step(current.state, ACTIONS[type], current.rng, DECK),
       lastAction: type,
+      lastOutcome: undefined,
     }));
+  };
+
+  const choose = (choiceId: string) => {
+    setGame((current) => {
+      const card = DECK.find((c) => c.id === current.state.pendingEventId);
+      if (!card) return current;
+      const choice = card.choices.find((c) => c.id === choiceId)!;
+      // Outcome prose is selected against the state the choice was made in.
+      const outcome = selectProse(choice.outcome, current.state);
+      return {
+        ...current,
+        state: resolveEvent(current.state, card, choiceId, current.rng),
+        lastOutcome: outcome,
+      };
+    });
   };
 
   const restart = () => setGame(makeGame(Date.now()));
 
-  const { state, lastAction } = game;
+  const { state, lastAction, lastOutcome } = game;
   const isOver = state.status !== 'active';
+  const pendingCard = state.pendingEventId
+    ? DECK.find((c) => c.id === state.pendingEventId)
+    : undefined;
   const present = presentFactions(state.factions);
   const currentCohesion = cohesion(state.factions);
 
@@ -91,7 +146,28 @@ export function App() {
             {VOICES[e.factionId!].betrayal}
           </p>
         ))}
-        {reaction && !isOver && <p class="reaction">{reaction}</p>}
+        {reaction && !isOver && !pendingCard && <p class="reaction">{reaction}</p>}
+        {lastOutcome && !isOver && <p class="event-outcome">{lastOutcome}</p>}
+        {pendingCard && !isOver && (
+          <div class="event-card" data-art={pendingCard.art}>
+            <p class="event-prose">{selectProse(pendingCard.prose, state)}</p>
+            <div class="event-choices">
+              {pendingCard.choices.map((choice) => {
+                const available = matches(choice.requires, state);
+                return (
+                  <button
+                    key={choice.id}
+                    onClick={() => choose(choice.id)}
+                    disabled={!available}
+                    title={available ? undefined : 'Not within the movement’s means'}
+                  >
+                    {choice.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
         {isOver && <p class="status-banner">{STATUS_TEXT[state.status]}</p>}
       </div>
 
@@ -138,7 +214,7 @@ export function App() {
 
       <div id="actions">
         {(Object.keys(ACTIONS) as ActionType[]).map((type) => (
-          <button key={type} onClick={() => act(type)} disabled={isOver}>
+          <button key={type} onClick={() => act(type)} disabled={isOver || !!pendingCard}>
             {ACTION_LABELS[type]}
           </button>
         ))}

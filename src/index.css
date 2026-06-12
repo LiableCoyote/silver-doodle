@@ -189,6 +189,28 @@ button:disabled {
   color: var(--ink-muted);
 }
 
+.event-card {
+  border: 1px solid var(--ink);
+  padding: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.event-prose {
+  margin-bottom: var(--space-3);
+}
+
+.event-choices {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.event-outcome {
+  border-left: 4px solid var(--border);
+  padding: var(--space-2) var(--space-3);
+  font-style: italic;
+}
+
 #log {
   grid-area: log;
   border-top: 1px solid var(--border);
