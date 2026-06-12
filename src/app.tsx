@@ -9,6 +9,7 @@ import { createInitialState, type GameState, type Resources } from './engine/sta
 import { DECK } from './content/events';
 import { createIdeologyFactions, createIdeologyResources } from './content/ideologies';
 import { reactionLine, voiceLine, VOICES } from './content/factions';
+import { APPARATUS, finaleBeats, intelligenceLine } from './content/apparatus';
 
 const RESOURCE_LABELS: Record<keyof Resources, string> = {
   legitimacy: 'Legitimacy',
@@ -32,6 +33,7 @@ const ACTION_LABELS: Record<ActionType, string> = {
   agitate: 'Agitate',
   fundraise: 'Fundraise',
   lay_low: 'Lay low',
+  outreach: 'Outreach',
 };
 
 /**
@@ -61,6 +63,30 @@ function scenarioState(): GameState | undefined {
         resources: { ...base.resources, legitimacy: 75, heat: 60 },
         flags: ['strike-called'],
         pendingEventId: 'picket-massacre',
+      };
+    case 'eve':
+      // The endgame, without the 40-turn replay: standing earned, units
+      // eroded, the cascade a few deployments away.
+      return {
+        ...base,
+        turn: 36,
+        resources: {
+          ...base.resources,
+          legitimacy: 85,
+          heat: 62,
+          cadre: 18,
+          materiel: 30,
+          sympathizers: 70,
+          grievance: 40,
+        },
+        flags: ['mutual-aid', 'garrison-contacts', 'garrison-outreach', 'officers-letter'],
+        units: base.units.map((u) =>
+          u.id === 'garrison'
+            ? { ...u, loyalty: 22 }
+            : u.id === 'police'
+              ? { ...u, loyalty: 45 }
+              : u,
+        ),
       };
     default:
       return undefined;
@@ -168,6 +194,12 @@ export function App() {
             </div>
           </div>
         )}
+        {state.status === 'cascade' &&
+          finaleBeats(state.units).map((beat, i) => (
+            <p class="departure" key={i}>
+              {beat}
+            </p>
+          ))}
         {isOver && <p class="status-banner">{STATUS_TEXT[state.status]}</p>}
       </div>
 
@@ -210,7 +242,16 @@ export function App() {
         ))}
       </div>
 
-      <div id="map-slot" />
+      <div id="map-slot">
+        <div id="apparatus">
+          {state.units.map((unit) => (
+            <div class={`unit ${unit.refused ? 'unit-refused' : ''}`} key={unit.id}>
+              <div class="unit-name">{APPARATUS[unit.id].name}</div>
+              <div class="unit-line">{intelligenceLine(unit)}</div>
+            </div>
+          ))}
+        </div>
+      </div>
 
       <div id="actions">
         {(Object.keys(ACTIONS) as ActionType[]).map((type) => (

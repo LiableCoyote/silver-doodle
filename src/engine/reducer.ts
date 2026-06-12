@@ -4,8 +4,15 @@ import { drawEvent } from './events';
 import type { FactionState } from './factions';
 import { clampMood, driftMood, presentFactions } from './factions';
 import {
-  CASCADE_MOMENTUM_REQUIRED,
-  cascadeQualifies,
+  applyFirstRefusalShock,
+  applyOutreach,
+  driftLoyalty,
+  RAILWAY_PACT_LOSS_FACTOR,
+  refusedCount,
+  REFUSALS_TO_WIN,
+  rollDeployment,
+} from './loyalty';
+import {
   clampResources,
   cohesion,
   EFFECTS,
@@ -140,21 +147,52 @@ export function step(
   let factions = applyMoods(state.factions, MOOD_EFFECTS[action.type]);
   factions = factions.map((f) => (f.present ? { ...f, mood: driftMood(f.mood) } : f));
 
+  // Loyalty phase: the regime re-consolidates what you neglect; legitimacy
+  // and kitchen ties seep into the barracks; outreach works on whoever is
+  // already wavering. (driftLoyalty/applyOutreach read pre-clamp resources;
+  // close enough, and it keeps the phase in one place.)
+  let units = driftLoyalty({ ...state, resources, flags });
+  if (action.type === 'outreach') {
+    units = applyOutreach({ ...state, resources, flags, units });
+  }
+
+  // Word from the provinces that refusal is possible lands once, on
+  // every unit. (Set by the garrison-refusal-rumor card.)
+  if (flags.includes('first-refusal') && !flags.includes('refusal-shock-spent')) {
+    units = applyFirstRefusalShock({ ...state, units });
+    flags = [...flags, 'refusal-shock-spent'];
+  }
+
   const raid = rollRaid(resources.heat, resources.cadre, resources.materiel, rng);
   if (raid.occurred) {
-    resources = {
-      ...resources,
-      cadre: resources.cadre - raid.cadreLoss,
-      materiel: resources.materiel - raid.materielLoss,
-      heat: resources.heat - raid.heatRelief,
-    };
-    factions = applyMoods(factions, RAID_MOOD_EFFECTS);
-    if (!flags.includes(CRACKDOWN_FLAG)) flags = [...flags, CRACKDOWN_FLAG];
-    log.push({
-      turn,
-      kind: 'raid',
-      detail: `raided — lost ${raid.cadreLoss} cadre, ${raid.materielLoss} materiel`,
-    });
+    // The regime deploys whoever it still trusts most — and finds out
+    // whether it still can.
+    const deployment = rollDeployment({ ...state, resources, flags, units }, rng);
+    if (deployment?.refused) {
+      units = deployment.units;
+      if (!flags.includes('unit-refused')) flags = [...flags, 'unit-refused'];
+      log.push({
+        turn,
+        kind: 'refusal',
+        detail: `${deployment.unit} refused orders`,
+        unitId: deployment.unit,
+      });
+    } else {
+      const lossFactor = flags.includes('railway-pact') ? RAILWAY_PACT_LOSS_FACTOR : 1;
+      resources = {
+        ...resources,
+        cadre: resources.cadre - Math.round(raid.cadreLoss * lossFactor),
+        materiel: resources.materiel - Math.round(raid.materielLoss * lossFactor),
+        heat: resources.heat - raid.heatRelief,
+      };
+      factions = applyMoods(factions, RAID_MOOD_EFFECTS);
+      if (!flags.includes(CRACKDOWN_FLAG)) flags = [...flags, CRACKDOWN_FLAG];
+      log.push({
+        turn,
+        kind: 'raid',
+        detail: `raided — lost ${raid.cadreLoss} cadre, ${raid.materielLoss} materiel`,
+      });
+    }
   }
 
   let splitFatal = false;
@@ -168,17 +206,17 @@ export function step(
 
   resources = clampResources(resources);
 
-  const cascadeMomentum = cascadeQualifies(resources, factions, turn)
-    ? state.cascadeMomentum + 1
-    : 0;
-
-  // Cascade is checked first: once the tipping point is reached, the
-  // movement has already won regardless of what its other clocks read.
+  // The victory condition: two of three units standing aside. The regime
+  // does not lose a battle — it discovers it no longer commands one.
   let status: GameState['status'] = 'active';
-  if (cascadeMomentum >= CASCADE_MOMENTUM_REQUIRED) status = 'cascade';
+  if (refusedCount(units) >= REFUSALS_TO_WIN) status = 'cascade';
   else if (splitFatal) status = 'split';
   else if (resources.cadre <= 0) status = 'decapitated';
   else if (resources.grievance <= 0) status = 'irrelevant';
+
+  if (status === 'cascade') {
+    log.push({ turn, kind: 'cascade', detail: 'the cascade' });
+  }
 
   log.push({ turn, kind: 'action', detail: action.type });
 
@@ -190,7 +228,7 @@ export function step(
     flags,
     firedEvents: state.firedEvents,
     pendingEventId: undefined,
-    cascadeMomentum,
+    units,
     log,
   };
 

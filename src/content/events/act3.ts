@@ -493,6 +493,83 @@ export const ACT3_EVENTS: EventCard[] = [
     ],
   },
   {
+    id: 'order-for-amnesty',
+    trigger: { flags: ['unit-refused'], notFlags: ['crackdown'] },
+    weight: 30,
+    prose: [
+      {
+        text: 'Within days of the refusal, the palace’s last offer arrives — no chamberlain this time, just a colonel with tired eyes and full powers: general amnesty, a constitution within the year, and the refusing unit pardoned to the last man, if the movement will call for order now. He does not pretend it is strength. "You can have the city in ruins next month," he says, "or most of what you wanted by Friday."',
+      },
+    ],
+    choices: [
+      {
+        id: 'take-friday',
+        label: 'Take most of it, by Friday',
+        effect: {
+          resources: { legitimacy: -8, heat: -15 },
+          setFlags: ['settlement-sought'],
+          moods: { moderates: 8, hardliners: -9, students: -5, labor: -2 },
+        },
+        outcome: [
+          {
+            text: 'You signal for calm, and the city — astonishingly, painfully — obeys you, which proves the colonel’s point about who governs now. The talks convene. Every hour at that table, the street’s certainty cools a degree, and Ilya attends no sessions and keeps no appointments and waits.',
+          },
+        ],
+      },
+      {
+        id: 'refuse-colonel',
+        label: 'The time for Fridays has passed',
+        effect: {
+          resources: { legitimacy: 4, heat: 6 },
+          moods: { hardliners: 6, students: 4, moderates: -6 },
+        },
+        outcome: [
+          {
+            text: 'The colonel nods like a man who has lost a wager with himself and leaves his card — "for the day after, whichever of us is left to use it." The offer becomes a pamphlet by morning: THEY ARE BARGAINING. EVEN THEY KNOW. The regime has confessed its weakness to its own garrisons, in writing.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'loyalist-rump',
+    trigger: { flags: ['unit-refused'], resource: { heat: { gte: 30 } }, notFlags: ['crackdown'] },
+    weight: 22,
+    prose: [
+      {
+        text: 'What remains loyal concentrates: officers who cannot be forgiven, officials with nowhere to defect to, the men whose names lead every list. They hold the ministry quarter and the arsenal bridge, and their commander has issued one statement: he would "rather leave a lesson than a city." The neutral districts between you and them are emptying of children.',
+      },
+    ],
+    choices: [
+      {
+        id: 'open-corridor',
+        label: 'Offer the rump a corridor out',
+        effect: {
+          resources: { legitimacy: 5, materiel: -4 },
+          moods: { moderates: 6, hardliners: -7 },
+        },
+        outcome: [
+          {
+            text: 'You publish the route and the terms — arms stacked at the bridge, safe passage to the port, no names taken. A third of them go the first night, which is a third fewer rifles behind the lesson their commander wanted to leave. Ilya calls it mercy for arsonists. Vera calls it the cheapest victory anyone ever bought. The children come back to the neutral districts.',
+          },
+        ],
+      },
+      {
+        id: 'tighten-ring',
+        label: 'Starve the quarter — no terms',
+        effect: {
+          resources: { heat: 8, grievance: 4 },
+          moods: { hardliners: 6, moderates: -6, labor: -2 },
+        },
+        outcome: [
+          {
+            text: 'The ring closes. Nothing enters the ministry quarter but rumors of what happens to holdouts. It will work — sieges of the irreconcilable always work — but the neutral districts watch you practice the regime’s arithmetic with better bookkeeping, and somewhere in the cellars, Ilya’s list grows a second page.',
+          },
+        ],
+      },
+    ],
+  },
+  {
     id: 'eve-of-cascade',
     trigger: { resource: { legitimacy: { gte: 75 }, heat: { gte: 30 } }, turn: { gte: 34 }, notFlags: ['crackdown'] },
     weight: 20,

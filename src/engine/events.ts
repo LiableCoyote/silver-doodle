@@ -1,6 +1,7 @@
 import type { FactionId, FactionState } from './factions';
 import { clampMood, presentFactions } from './factions';
-import { cascadeQualifies, clampResources, cohesion, martyrConversion } from './formulas';
+import { applyBrutalityBacklash } from './loyalty';
+import { clampResources, cohesion, martyrConversion } from './formulas';
 import type { RNG } from './rng';
 import type { GameState, Resources } from './state';
 
@@ -153,6 +154,7 @@ export function resolveEvent(
 
   const effect = choice.effect;
   let resources = { ...state.resources };
+  let units = state.units;
   if (effect.resources) {
     for (const [key, delta] of Object.entries(effect.resources) as Array<
       [keyof Resources, number]
@@ -161,7 +163,12 @@ export function resolveEvent(
     }
   }
   if (effect.martyrConversion) {
-    resources.legitimacy += martyrConversion(state.resources.legitimacy);
+    const conversion = martyrConversion(state.resources.legitimacy);
+    resources.legitimacy += conversion;
+    // The barracks read the same broadsheets: a successfully framed
+    // massacre erodes the apparatus too. Chaos doesn't — it frightens
+    // soldiers toward obedience.
+    units = applyBrutalityBacklash(state, conversion);
   }
   resources = clampResources(resources);
 
@@ -182,12 +189,6 @@ export function resolveEvent(
     flags = flags.filter((f) => f !== 'crackdown');
   }
 
-  // A choice can break cascade momentum (the garrisons saw you falter) but
-  // never grants the win mid-turn — only held state across turns does that.
-  const cascadeMomentum = cascadeQualifies(resources, factions, state.turn)
-    ? state.cascadeMomentum
-    : 0;
-
   let status: GameState['status'] = 'active';
   if (resources.cadre <= 0) status = 'decapitated';
   else if (resources.grievance <= 0) status = 'irrelevant';
@@ -199,7 +200,7 @@ export function resolveEvent(
     factions,
     flags,
     status,
-    cascadeMomentum,
+    units,
     pendingEventId: undefined,
     firedEvents: state.firedEvents.includes(card.id)
       ? state.firedEvents

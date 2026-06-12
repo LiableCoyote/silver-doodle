@@ -1,5 +1,7 @@
 import type { FactionState } from './factions';
 import { createFactions } from './factions';
+import type { SecurityUnit } from './loyalty';
+import { createUnits } from './loyalty';
 
 /**
  * The resource economy from the design brief. All are held on 0-100 scales
@@ -37,10 +39,12 @@ export type GameStatus =
  */
 export interface TurnEvent {
   turn: number;
-  kind: 'action' | 'raid' | 'split' | 'event';
+  kind: 'action' | 'raid' | 'split' | 'event' | 'refusal' | 'cascade';
   detail: string;
   /** For 'split': which faction departed. */
   factionId?: FactionState['id'];
+  /** For 'refusal': which unit stood aside. */
+  unitId?: SecurityUnit['id'];
 }
 
 export interface GameState {
@@ -54,8 +58,8 @@ export interface GameState {
   firedEvents: string[];
   /** An event awaiting the player's choice; blocks the next action. */
   pendingEventId?: string;
-  /** Consecutive turns the cascade conditions have held (see formulas.ts). */
-  cascadeMomentum: number;
+  /** The security apparatus — the real victory condition lives here. */
+  units: SecurityUnit[];
   log: TurnEvent[];
 }
 
@@ -80,7 +84,7 @@ export function createInitialState(
     flags: [],
     firedEvents: [],
     pendingEventId: undefined,
-    cascadeMomentum: 0,
+    units: createUnits(),
     log: [],
   };
 }

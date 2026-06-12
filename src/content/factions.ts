@@ -49,6 +49,7 @@ export const VOICES: Record<FactionId, FactionVoice> = {
       lay_low: '"Discipline. Finally." Vera approves, in her way: she stops drafting her resignation.',
       fundraise: '"Respectable money respects quiet bookkeeping. This was well done."',
       agitate: '"You have made us look like arsonists. I will be explaining this for a month."',
+      outreach: '"Talking to officers. At last, a sedition I can defend in a courtroom."',
     },
     departure:
       'Vera resigns by letter, hand-delivered, sealed. Three pages, no anger in any of them — which is how you know it is final. She thanks you for "an education in the limits of persuasion." The professional committees go with her: the lawyers, the sympathetic clerks, the money that asked no questions. The room is louder without her, and smaller.',
@@ -85,6 +86,7 @@ export const VOICES: Record<FactionId, FactionVoice> = {
       agitate: '"More. Louder. While they\'re still deciding whether to be afraid." Ilya is grinning.',
       lay_low: '"Hide, then. The dead are very discreet too." Ilya leaves before the vote.',
       organize: '"Study circles." Ilya spits. But he sends two of his best to teach in them anyway.',
+      outreach: '"Write to the butchers, then. Ask them how they like their bread." Ilya cleans the knife he wasn\'t holding a moment ago.',
     },
     departure:
       'Ilya doesn\'t write letters. He empties the armory in a night — rifles, the good press, four of your best organizers — and leaves the door standing open so you understand it wasn\'t theft, it was a verdict. On the table where the maps used to be: his list of the taken, weighted down with a single cartridge.',
@@ -121,6 +123,7 @@ export const VOICES: Record<FactionId, FactionVoice> = {
       organize: '"Mutual aid filled two kitchens this week. That\'s two hundred families who know our name now." Goran nods slowly.',
       fundraise: '"Money\'s money. Just remember whose rent it was first."',
       agitate: '"Fine words. The overseers docked my whole floor a day\'s wage for listening to them."',
+      outreach: '"Half those conscripts are our boys in worse coats. About time someone wrote to them." Goran supplies the names of three sergeants\' mothers.',
     },
     departure:
       'Goran takes the union rolls, the strike fund, and the kitchens — everything that feeds someone. "No hard feelings," he says, shaking your hand like a man closing an account. "But I buried two organizers this year, and you spent the wreaths on pamphlets." The river district goes dark to you the same night. Four hundred hands, withdrawn as one.',

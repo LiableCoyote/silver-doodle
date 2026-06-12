@@ -41,6 +41,9 @@ export const EFFECTS: Record<ActionType, Partial<Resources>> = {
   agitate: { legitimacy: 8, sympathizers: 6, heat: 16, materiel: -3 },
   fundraise: { materiel: 10, heat: 3 },
   lay_low: { heat: -8, sympathizers: -3, legitimacy: -2 },
+  // Officer outreach: the Act III verb. Loyalty erosion happens in the
+  // reducer (applyOutreach); these are just the overheads.
+  outreach: { materiel: -5, heat: 4 },
 };
 
 /**
@@ -52,6 +55,8 @@ export const MOOD_EFFECTS: Record<ActionType, Record<FactionId, number>> = {
   agitate: { moderates: -4, hardliners: 4, labor: -1, students: 3 },
   fundraise: { moderates: 2, hardliners: -3, labor: 0, students: -1 },
   lay_low: { moderates: 3, hardliners: -4, labor: 1, students: -2 },
+  // Labor's sons wear the uniforms; the hardliners call it fraternizing.
+  outreach: { moderates: 1, hardliners: -3, labor: 2, students: 0 },
 };
 
 /** Raids vindicate the hardliners and frighten the moderates. */
@@ -137,29 +142,3 @@ export function rollRaid(heat: number, cadre: number, materiel: number, rng: RNG
   };
 }
 
-export const CASCADE_TURN_THRESHOLD = 40;
-export const CASCADE_LEGITIMACY_THRESHOLD = 80;
-export const CASCADE_HEAT_CEILING = 60;
-export const CASCADE_COHESION_FLOOR = 40;
-/** Consecutive qualifying turns before the garrisons commit. */
-export const CASCADE_MOMENTUM_REQUIRED = 3;
-
-/**
- * Placeholder win check until milestone 4's loyalty-cascade system lands.
- * A turn "qualifies" when the movement visibly holds the city: high
- * legitimacy, manageable heat, a coalition not at war with itself.
- * Garrisons defect to movements that hold that state, not ones that
- * flicker across the line — hence the momentum requirement.
- */
-export function cascadeQualifies(
-  resources: Resources,
-  factions: FactionState[],
-  turn: number,
-): boolean {
-  return (
-    turn >= CASCADE_TURN_THRESHOLD &&
-    resources.legitimacy >= CASCADE_LEGITIMACY_THRESHOLD &&
-    resources.heat <= CASCADE_HEAT_CEILING &&
-    cohesion(factions) >= CASCADE_COHESION_FLOOR
-  );
-}

@@ -8,8 +8,9 @@
  *    engine-set and whitelisted), and flags set but never read (warning)
  *  - crackdown cards: exactly one martyrConversion choice, and repeatable
  */
-import type { Condition, EventCard, Range } from '../src/engine/events';
-import { DECK } from '../src/content/events';
+import type { Condition, Range } from '../src/engine/events';
+import { DECK, EPILOGUE_FLAGS } from '../src/content/events';
+import { ENGINE_READ_FLAGS } from '../src/engine/loyalty';
 import { CRACKDOWN_FLAG } from '../src/engine/reducer';
 
 const errors: string[] = [];
@@ -37,8 +38,10 @@ function unreachable(variantWhen: Condition, trigger: Condition): boolean {
 }
 
 const ids = new Set<string>();
-const flagsSet = new Set<string>([CRACKDOWN_FLAG]);
-const flagsRead = new Set<string>();
+// The engine sets 'crackdown' and 'unit-refused' itself.
+const flagsSet = new Set<string>([CRACKDOWN_FLAG, 'unit-refused']);
+// Flags consumed by the loyalty engine or reserved for the epilogue.
+const flagsRead = new Set<string>([...ENGINE_READ_FLAGS, ...EPILOGUE_FLAGS]);
 
 for (const card of DECK) {
   if (ids.has(card.id)) errors.push(`${card.id}: duplicate card id`);

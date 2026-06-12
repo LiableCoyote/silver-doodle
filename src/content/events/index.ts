@@ -11,3 +11,16 @@ export const DECK: EventCard[] = [
   ...ACT3_EVENTS,
   ...CRACKDOWN_EVENTS,
 ];
+
+/**
+ * Flags set during play whose meaning is rendered by the milestone-5
+ * epilogue generator (the promise ledger), not by cards or the engine.
+ * Listed here so the content validator knows they are spoken for.
+ */
+export const EPILOGUE_FLAGS = [
+  'informant-purged',
+  'clerk-recruited',
+  'armory-promise',
+  'amnesty-offer',
+  'settlement-sought',
+] as const;

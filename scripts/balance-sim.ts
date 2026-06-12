@@ -69,8 +69,9 @@ const adaptiveAction: ActionPolicy = (state) => {
   const present = presentFactions(state.factions);
   const angriest = present.reduce((min, f) => (f.mood < min.mood ? f : min));
   // Only true emergencies interrupt the program: an imminent raid, an
-  // empty treasury. Otherwise run hot — raids are survivable now, and the
-  // post-raid lull is exactly the window the cascade needs.
+  // empty treasury. Otherwise build legitimacy, keep the coalition fed,
+  // and spend the endgame talking to soldiers — the cascade is bought
+  // with outreach, and deployments test whoever you've been talking to.
   if (heat > 70) return 'lay_low';
   if (materiel < 8) return 'fundraise';
   if (angriest.mood < 42) {
@@ -78,6 +79,7 @@ const adaptiveAction: ActionPolicy = (state) => {
       MOOD_EFFECTS[a][angriest.id] > MOOD_EFFECTS[top][angriest.id] ? a : top,
     );
   }
+  if (legitimacy >= 70 && materiel >= 12) return 'outreach';
   if (legitimacy < 85) return 'agitate';
   return 'organize';
 };
@@ -143,6 +145,23 @@ const strategies: Record<string, Strategy> = {
     event: (state, card) => {
       const choices = availableChoices(card, state);
       return (choices.find((c) => !c.effect.martyrConversion) ?? choices[0]).id;
+    },
+  },
+
+  // Reprisal A/B: identical adaptive play; the only difference is the
+  // answer to Ilya's list. The list should measurably cost the cascade.
+  reprisal_allow: {
+    act: adaptiveAction,
+    event: (state, card, rng) => {
+      if (card.id === 'reprisal-lists') return 'allow-quietly';
+      return dialAware(state, card, rng);
+    },
+  },
+  reprisal_forbid: {
+    act: adaptiveAction,
+    event: (state, card, rng) => {
+      if (card.id === 'reprisal-lists') return 'forbid-lists';
+      return dialAware(state, card, rng);
     },
   },
 };

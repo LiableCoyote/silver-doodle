@@ -73,6 +73,34 @@ h1 {
   grid-area: map-slot;
 }
 
+#apparatus {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.unit {
+  border: 1px dashed var(--border);
+  padding: var(--space-2) var(--space-3);
+}
+
+.unit-refused {
+  border-style: solid;
+  border-color: var(--accent);
+}
+
+.unit-name {
+  font-size: 14px;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.unit-line {
+  margin-top: var(--space-1);
+  font-size: 16px;
+  color: var(--ink-muted);
+}
+
 #actions {
   grid-area: actions;
   display: flex;
