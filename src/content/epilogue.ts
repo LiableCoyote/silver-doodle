@@ -21,6 +21,8 @@ const OPENING_BEATS: Record<GameState['status'], string> = {
     'The window closed the way windows close — not with a slam but a draft you stopped noticing. The regime\'s gazette barely mentions you; when it does, it is in the past tense, filed under disturbances, already a footnote to a calmer season.',
   split:
     'The movement\'s obituary, when it is finally written, will be an argument over the name — who it belonged to, who let it go, whose fault the letting-go was. Everyone involved will be right, which is the whole problem.',
+  fallen:
+    'The city fell in an afternoon. The wireless kept broadcasting instructions to stay calm until the moment it began broadcasting other instructions, in the same announcer\'s voice. What happens now happens to lists of names, and the lists were always better organized than anyone admitted.',
 };
 
 interface DebtCheck {

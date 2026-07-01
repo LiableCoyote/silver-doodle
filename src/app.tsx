@@ -44,6 +44,7 @@ const STATUS_TEXT: Record<GameState['status'], string> = {
   irrelevant: 'Irrelevant — the window closed. Material conditions stabilized without you.',
   split: 'Split — what remains is no longer a coalition. It is a grudge with a mailing list.',
   cascade: 'Cascade — the garrisons are refusing orders. The regime is falling.',
+  fallen: 'The rising has taken the city. What was built here goes under, holding its lists.',
 };
 
 const ACTION_LABELS: Record<ActionType, string> = {

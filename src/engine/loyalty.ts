@@ -44,7 +44,11 @@ export const ENGINE_READ_FLAGS = [
   'reprisal-lists',
   'railway-pact',
   'unit-refused',
+  'sotelo',
 ] as const;
+
+/** After Calvo Sotelo, the officers close ranks: extra recovery per turn. */
+export const SOTELO_RECOVERY = 1;
 
 export const REFUSAL_THRESHOLD_BASE = 35;
 export const OFFICERS_LETTER_THRESHOLD_BONUS = 5;
@@ -88,6 +92,10 @@ export function driftLoyalty(state: GameState): SecurityUnit[] {
     let loyalty = unit.loyalty;
     // The regime re-consolidates whatever you neglect.
     if (loyalty < STARTING_LOYALTY[unit.id]) loyalty += 1;
+    // After Calvo Sotelo, the officers close ranks.
+    if (state.flags.includes('sotelo') && loyalty < STARTING_LOYALTY[unit.id]) {
+      loyalty += SOTELO_RECOVERY;
+    }
     if (isErodible(state, unit)) {
       let erosion = 0;
       if (unit.id !== 'guard' && legitimacy >= 60) {
@@ -199,4 +207,39 @@ export function rollDeployment(state: GameState, rng: RNG): DeploymentResult | u
 
 export function refusedCount(units: SecurityUnit[]): number {
   return units.filter((u) => u.refused).length;
+}
+
+/** The appointment history keeps whether you are ready or not. */
+export const RISING_TURN = 43;
+
+export interface RisingResult {
+  /** Units that had already, visibly, stopped being reliable for the plotters. */
+  standing: UnitId[];
+  /** Units that break with their officers in the moment itself. */
+  joined: UnitId[];
+  won: boolean;
+}
+
+/**
+ * The rising: every unit is tested at once. Already-refused units stand
+ * with the street; the rest roll the ordinary refusal check against
+ * whatever loyalty the plotters still command in them.
+ */
+export function resolveRising(state: GameState, rng: RNG): RisingResult {
+  const threshold = refusalThreshold(state);
+  const standing: UnitId[] = [];
+  const joined: UnitId[] = [];
+  for (const unit of state.units) {
+    if (unit.refused) {
+      standing.push(unit.id);
+      continue;
+    }
+    const probability = Math.max(0, (threshold - unit.loyalty) / threshold);
+    if (rng() < probability) joined.push(unit.id);
+  }
+  return {
+    standing,
+    joined,
+    won: standing.length + joined.length >= REFUSALS_TO_WIN,
+  };
 }

@@ -91,6 +91,19 @@ for (const card of DECK) {
   }
 }
 
+// Scheduled history: once-only, never dial cards, one card per date.
+const scheduledTurns = new Map<number, string>();
+for (const card of DECK) {
+  if (card.scheduledTurn === undefined) continue;
+  if (card.once === false) errors.push(`${card.id}: scheduled cards must be once-only`);
+  if (card.trigger.flags?.includes(CRACKDOWN_FLAG)) {
+    errors.push(`${card.id}: scheduled cards cannot be crackdown cards`);
+  }
+  const clash = scheduledTurns.get(card.scheduledTurn);
+  if (clash) errors.push(`${card.id}: shares scheduledTurn ${card.scheduledTurn} with ${clash}`);
+  scheduledTurns.set(card.scheduledTurn, card.id);
+}
+
 // Art coverage: every card art key must have a drawn scene; unused scenes warn.
 const usedArt = new Set(DECK.flatMap((c) => (c.art ? [c.art] : [])));
 for (const key of usedArt) {

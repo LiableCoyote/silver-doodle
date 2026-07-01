@@ -29,9 +29,10 @@ export interface Resources {
 export type GameStatus =
   | 'active'
   | 'decapitated' // cadre hit zero under raids
-  | 'irrelevant' // grievance decayed away — the window closed
+  | 'irrelevant' // grievance decayed away — the movement demobilized
   | 'split' // a split left less than a coalition standing
-  | 'cascade'; // proxy win condition until milestone 4's real loyalty system
+  | 'cascade' // the apparatus stands with the street — the rising fails
+  | 'fallen'; // the rising succeeds — the city falls
 
 /**
  * Structured record of a turn's notable happenings. The engine logs facts;

@@ -230,6 +230,6 @@ describe('the cascade (win) and the campaign (exit criterion)', () => {
           )
         : step(state, ACTIONS.lay_low, rng, DECK);
     }
-    expect(['decapitated', 'irrelevant', 'split']).toContain(state.status);
+    expect(['decapitated', 'irrelevant', 'split', 'fallen']).toContain(state.status);
   });
 });

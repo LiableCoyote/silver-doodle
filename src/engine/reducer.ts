@@ -1,6 +1,6 @@
 import type { Action } from './actions';
 import type { EventCard } from './events';
-import { drawEvent } from './events';
+import { drawEvent, eligibleEvents } from './events';
 import type { FactionState } from './factions';
 import { clampMood, driftMood, presentFactions } from './factions';
 import {
@@ -10,6 +10,9 @@ import {
   RAILWAY_PACT_LOSS_FACTOR,
   refusedCount,
   REFUSALS_TO_WIN,
+  resolveRising,
+  RISING_TURN,
+  type RisingResult,
   rollDeployment,
 } from './loyalty';
 import {
@@ -163,7 +166,30 @@ export function step(
     flags = [...flags, 'refusal-shock-spent'];
   }
 
-  const raid = rollRaid(resources.heat, resources.cadre, resources.materiel, rng);
+  // The appointment: on the rising's turn there is no ordinary raid —
+  // every unit is tested at once, and the campaign resolves.
+  let rising: RisingResult | undefined;
+  if (turn >= RISING_TURN) {
+    rising = resolveRising({ ...state, resources, flags, units }, rng);
+    for (const unitId of rising.joined) {
+      units = units.map((u) => (u.id === unitId ? { ...u, refused: true } : u));
+      log.push({
+        turn,
+        kind: 'refusal',
+        detail: `${unitId} broke with the rising`,
+        unitId,
+      });
+    }
+    log.push({
+      turn,
+      kind: 'cascade',
+      detail: rising.won ? 'the rising fails' : 'the city falls',
+    });
+  }
+
+  const raid = rising
+    ? { occurred: false, cadreLoss: 0, materielLoss: 0, heatRelief: 0 }
+    : rollRaid(resources.heat, resources.cadre, resources.materiel, rng);
   if (raid.occurred) {
     // The regime deploys whoever it still trusts most — and finds out
     // whether it still can.
@@ -206,16 +232,18 @@ export function step(
 
   resources = clampResources(resources);
 
-  // The victory condition: two of three units standing aside. The regime
-  // does not lose a battle — it discovers it no longer commands one.
+  // Resolution. Before July: two of three units standing aside breaks the
+  // conspiracy early. On the rising's turn: the test is taken as-is, and
+  // the campaign ends win or lose.
   let status: GameState['status'] = 'active';
-  if (refusedCount(units) >= REFUSALS_TO_WIN) status = 'cascade';
+  if (rising) status = rising.won ? 'cascade' : 'fallen';
+  else if (refusedCount(units) >= REFUSALS_TO_WIN) status = 'cascade';
   else if (splitFatal) status = 'split';
   else if (resources.cadre <= 0) status = 'decapitated';
   else if (resources.grievance <= 0) status = 'irrelevant';
 
-  if (status === 'cascade') {
-    log.push({ turn, kind: 'cascade', detail: 'the cascade' });
+  if (status === 'cascade' && !rising) {
+    log.push({ turn, kind: 'cascade', detail: 'the conspiracy collapses early' });
   }
 
   log.push({ turn, kind: 'action', detail: action.type });
@@ -232,17 +260,32 @@ export function step(
     log,
   };
 
-  // Draw at most one event. A pending crackdown always presents itself
-  // (from the dial cards only); ordinary cards arrive at a pace that
-  // leaves room for quiet turns and never preempt a crackdown.
+  // Draw at most one event, by priority:
+  //   1. a pending crackdown always presents itself (dial cards only);
+  //   2. else due scheduled history (lowest scheduledTurn first);
+  //   3. else the ordinary random draw, which leaves room for quiet turns.
   if (status === 'active') {
     const mustDraw = flags.includes(CRACKDOWN_FLAG);
-    const pool = mustDraw
-      ? deck.filter((c) => c.trigger.flags?.includes(CRACKDOWN_FLAG))
-      : deck.filter((c) => !c.trigger.flags?.includes(CRACKDOWN_FLAG));
-    if (mustDraw || rng() < EVENT_DRAW_CHANCE) {
+    if (mustDraw) {
+      const pool = deck.filter((c) => c.trigger.flags?.includes(CRACKDOWN_FLAG));
       const card = drawEvent(pool, next, rng);
       if (card) next = { ...next, pendingEventId: card.id };
+    } else {
+      const due = eligibleEvents(
+        deck.filter((c) => c.scheduledTurn !== undefined && turn >= c.scheduledTurn),
+        next,
+      ).sort(
+        (a, b) => a.scheduledTurn! - b.scheduledTurn! || a.id.localeCompare(b.id),
+      );
+      if (due.length > 0) {
+        next = { ...next, pendingEventId: due[0].id };
+      } else if (rng() < EVENT_DRAW_CHANCE) {
+        const pool = deck.filter(
+          (c) => !c.trigger.flags?.includes(CRACKDOWN_FLAG) && c.scheduledTurn === undefined,
+        );
+        const card = drawEvent(pool, next, rng);
+        if (card) next = { ...next, pendingEventId: card.id };
+      }
     }
   }
 

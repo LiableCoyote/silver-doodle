@@ -64,6 +64,13 @@ export interface EventCard {
   weight: number;
   /** Fires at most once per campaign. Default true. */
   once?: boolean;
+  /**
+   * History on a schedule: the card becomes DUE at this turn and fires
+   * with priority over random draws at the first opening (a pending
+   * crackdown can delay it a turn — history arrives, sometimes late by
+   * a mail-coach). Still subject to trigger and firedEvents.
+   */
+  scheduledTurn?: number;
   /** Visual hook (PLAN.md §6) — reserved, unrendered in v1. */
   art?: string;
   prose: ProseVariant[];
