@@ -50,7 +50,7 @@ export const ENGINE_READ_FLAGS = [
 /** After Calvo Sotelo, the officers close ranks: extra recovery per turn. */
 export const SOTELO_RECOVERY = 1;
 
-export const REFUSAL_THRESHOLD_BASE = 35;
+export const REFUSAL_THRESHOLD_BASE = 40;
 export const OFFICERS_LETTER_THRESHOLD_BONUS = 5;
 export const CONTAGION_LOYALTY_LOSS = 14;
 export const FIRST_REFUSAL_SHOCK = 8;
@@ -221,21 +221,30 @@ export interface RisingResult {
 }
 
 /**
- * The rising: every unit is tested at once. Already-refused units stand
- * with the street; the rest roll the ordinary refusal check against
- * whatever loyalty the plotters still command in them.
+ * The rising: every unit is tested in the same hour, wavering first —
+ * and the hour has its own contagion. A unit that stands with the street
+ * (or already, visibly, had) knocks loyalty off every unit still
+ * deciding, exactly the way the day actually resolved in the cities:
+ * the corps that declared last declared after watching the street win.
  */
 export function resolveRising(state: GameState, rng: RNG): RisingResult {
   const threshold = refusalThreshold(state);
   const standing: UnitId[] = [];
   const joined: UnitId[] = [];
-  for (const unit of state.units) {
+  const order = [...state.units].sort((a, b) => a.loyalty - b.loyalty);
+  let contagion = 0;
+  for (const unit of order) {
     if (unit.refused) {
       standing.push(unit.id);
+      contagion += CONTAGION_LOYALTY_LOSS;
       continue;
     }
-    const probability = Math.max(0, (threshold - unit.loyalty) / threshold);
-    if (rng() < probability) joined.push(unit.id);
+    const effective = Math.max(0, unit.loyalty - contagion);
+    const probability = Math.max(0, (threshold - effective) / threshold);
+    if (rng() < probability) {
+      joined.push(unit.id);
+      contagion += CONTAGION_LOYALTY_LOSS;
+    }
   }
   return {
     standing,

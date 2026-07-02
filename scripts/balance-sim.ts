@@ -22,7 +22,7 @@ import { step } from '../src/engine/reducer';
 import { createInitialState, type GameState, type GameStatus } from '../src/engine/state';
 
 const RUNS_PER_COMBO = 2000;
-const MAX_TURNS = 60;
+const MAX_TURNS = 46;
 
 type ActionPolicy = (state: GameState) => ActionType;
 type EventPolicy = (state: GameState, card: EventCard, rng: RNG) => string;
@@ -205,6 +205,7 @@ function summarize(results: RunResult[]) {
     irrelevant: 0,
     split: 0,
     cascade: 0,
+    fallen: 0,
   };
   let turnSum = 0;
   let legitimacySum = 0;
@@ -219,6 +220,7 @@ function summarize(results: RunResult[]) {
   }
   return {
     cascadeRate: counts.cascade / total,
+    fallenRate: counts.fallen / total,
     decapitatedRate: counts.decapitated / total,
     irrelevantRate: counts.irrelevant / total,
     splitRate: counts.split / total,
@@ -242,6 +244,7 @@ const header = [
   'strategy'.padEnd(16),
   'ideology'.padEnd(11),
   'cascade'.padEnd(9),
+  'fallen'.padEnd(9),
   'decap'.padEnd(9),
   'irrelevant'.padEnd(11),
   'splitLoss'.padEnd(10),
@@ -266,6 +269,7 @@ for (const [name, strategy] of Object.entries(strategies)) {
         name.padEnd(16),
         ideology.padEnd(11),
         pct(s.cascadeRate).padEnd(9),
+        pct(s.fallenRate).padEnd(9),
         pct(s.decapitatedRate).padEnd(9),
         pct(s.irrelevantRate).padEnd(11),
         pct(s.splitRate).padEnd(10),
