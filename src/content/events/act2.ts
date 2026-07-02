@@ -1,10 +1,11 @@
 import type { EventCard } from '../../engine/events';
 
 /**
- * Act II — going loud. The strike chain, the streets, the faction
- * ultimatums. The picket-line massacre is the flagship dial card: the
- * same dead read as martyrs or as chaos depending on accumulated
- * legitimacy. Same event, opposite outcome, decided by prior play.
+ * Act II — going loud, April into June. The local general strike, the
+ * streets, the tendencies' ultimatums. The picket massacre is the
+ * flagship dial card: the same dead read as martyrs or as disorder
+ * depending on accumulated standing. Casas Viejas is in every memory
+ * on both sides of the question.
  */
 export const ACT2_EVENTS: EventCard[] = [
   {
@@ -19,10 +20,10 @@ export const ACT2_EVENTS: EventCard[] = [
     prose: [
       {
         when: { resource: { legitimacy: { gte: 55 } } },
-        text: 'The mills are ready. The kitchens are stocked. When your committees canvass the shop floors the question has changed from whether to when — they are waiting on one word, and the word is yours.',
+        text: 'The mills are ready. The comedores are stocked. When the syndicates canvass the shop floors the question has changed from whether to when — they are waiting on one word, and the word is the committee\'s.',
       },
       {
-        text: 'Goran lays the shop-floor counts on the table. The numbers are there, barely. The conviction is thinner. A general strike called now would be obeyed — once. There will not be a second once.',
+        text: 'The UGT secretary lays the shop-floor counts on the table. The numbers are there, barely. The conviction is thinner. A general strike called now would be obeyed — once. There will not be a second once before July.',
       },
     ],
     choices: [
@@ -36,7 +37,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'At six in the morning the whistles blow over empty yards. By noon the trams stop mid-route and the silence has a texture, like held breath. The regime’s first response is to pretend not to notice. Its second will not be.',
+            text: 'At six in the morning the mill whistles blow over empty yards. By noon the trams stop mid-route and the silence has a texture, like held breath. The Gobierno Civil\'s first response is to pretend not to notice. Its second will not be.',
           },
         ],
       },
@@ -46,7 +47,7 @@ export const ACT2_EVENTS: EventCard[] = [
         effect: { moods: { hardliners: -4, labor: -3, moderates: 3 } },
         outcome: [
           {
-            text: 'You send the committees back with instructions to wait. Most understand. The foundry delegation leaves without shaking hands, and Ilya watches them go like a man memorizing a lesson.',
+            text: 'You send the syndicates back with instructions to wait. Most understand. The foundry delegation leaves without shaking hands, and the faísta delegate watches them go like a man memorizing a lesson.',
           },
         ],
       },
@@ -60,14 +61,14 @@ export const ACT2_EVENTS: EventCard[] = [
     prose: [
       {
         when: { resource: { legitimacy: { gte: 60 } } },
-        text: 'Troops fire on the picket at the Northern Mill: eleven dead, among them a boy who carried water and a weaver still holding her sign. They died as the city watched — and the city knows them, because for two years you have made sure it does. Every window on the boulevard already wears black cloth. The story is waiting to be told; it is only waiting for you to decide who tells it.',
+        text: 'The Guardia Civil fires on the picket at the Fábrica del Norte: eleven dead, among them a boy who carried water and a weaver still holding her sign. They died as the city watched — and the city knows them, because for months the alliance has made sure it does. Every balcony on the avenida already wears black cloth. Casas Viejas is in every mouth. The story is waiting to be told; it is only waiting for the committee to decide who tells it.',
       },
       {
         when: { resource: { legitimacy: { lte: 30 } } },
-        text: 'Troops fire on the picket at the Northern Mill: eleven dead. By evening the regime’s papers have the only version that travels — agitators, foreign money, a mob that charged the line. You hear your own name in the account of a crowd you never raised. The dead belong to whoever explains them, and right now no one is listening to you.',
+        text: 'The Guardia Civil fires on the picket at the Fábrica del Norte: eleven dead. By evening the right\'s papers have the only version that travels — agitators, foreign gold, a mob that charged the tricorns. You hear the alliance\'s name in the account of a crowd you never raised. The dead belong to whoever explains them, and right now no one is listening to you.',
       },
       {
-        text: 'Troops fire on the picket at the Northern Mill: eleven dead. The papers call it a riot; the streets call it murder; most of the city hasn’t decided what to call it. Eleven names are about to mean something — the question is whether you have the standing to say what.',
+        text: 'The Guardia Civil fires on the picket at the Fábrica del Norte: eleven dead. The papers call it a riot; the Arrabal calls it murder; most of the city has not decided what to call it. Eleven names are about to mean something — the question is whether the alliance has the standing to say what.',
       },
     ],
     choices: [
@@ -83,10 +84,10 @@ export const ACT2_EVENTS: EventCard[] = [
         outcome: [
           {
             when: { resource: { legitimacy: { gte: 60 } } },
-            text: 'Eleven names, eleven woodcuts, eleven funerals that fill eleven streets. The garrison commander is burned in effigy by a crowd that includes two off-duty soldiers. It cost you organizers to run those funerals in daylight — the police photographed everyone — but the city has chosen its dead, and they are yours.',
+            text: 'Eleven names, eleven portraits, eleven funerals that fill eleven streets. The comandante of the Guardia Civil is burned in effigy by a crowd that includes two off-duty soldiers of the Regimiento. It cost you organizers to run those funerals in daylight — the Brigada Social photographed everyone — but the city has chosen its dead, and they are yours.',
           },
           {
-            text: 'You print the names and the crowd does not come. Without standing, the accusation reads as opportunism — a faction waving corpses for advantage. The papers reply with your record, such as it is, and win the exchange. The organizers you exposed to run the campaign are picked up one by one.',
+            text: 'You print the names and the crowd does not come. Without standing, the accusation reads as opportunism — a committee waving corpses for advantage, exactly as the right\'s papers predicted it would. They answer with your record, such as it is, and win the exchange. The organizers you exposed to run the campaign are picked up one by one under the state of alarm.',
           },
         ],
       },
@@ -99,7 +100,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'You bury the dead in private and pull the committees underground. The strike gutters out. What remains of the movement is intact and ashamed, which is a kind of survival. Ilya reads the eleven names at the next meeting, uninvited, and sits down without comment.',
+            text: 'You bury the dead in private and pull the syndicates underground. The strike gutters out. What remains of the alliance is intact and ashamed, which is a kind of survival. The faísta delegate reads the eleven names at the next meeting, uninvited, and sits down without comment.',
           },
         ],
       },
@@ -112,20 +113,20 @@ export const ACT2_EVENTS: EventCard[] = [
     prose: [
       {
         when: { flags: ['mutual-aid'] },
-        text: 'Third week of the strike. The kitchens Goran built are the only thing standing between the mill rows and capitulation — and the kettles are scraping bottom. The network knows every hungry family by name; the names are getting longer than the soup.',
+        text: 'Third week of the strike. The comedores are the only thing standing between the mill rows and capitulation — and the kettles are scraping bottom. The network knows every hungry family by name; the names are getting longer than the soup.',
       },
       {
-        text: 'Third week of the strike, and there was never a relief network worth the name. Families are pawning tools to eat — a striker who pawns his tools is telling you how this ends. The committees ask for an answer they can bring back to the rows.',
+        text: 'Third week of the strike, and there was never a relief network worth the name. Families are pawning tools to eat — a striker who pawns his tools is telling you how this ends. The syndicates ask for an answer they can bring back to the rows.',
       },
     ],
     choices: [
       {
         id: 'spend',
-        label: 'Empty the reserve into the kitchens',
+        label: 'Empty the reserve into the comedores',
         effect: { resources: { materiel: -10 }, moods: { labor: 5, moderates: -2 } },
         outcome: [
           {
-            text: 'Everything goes to flour and coal. The rows hold. A delegation of strikers’ wives takes over the distribution and runs it better than your committees did — remember that, later, when someone asks who organized whom.',
+            text: 'Everything goes to flour and coal. The rows hold. A committee of strikers\' wives takes over the distribution and runs it better than your syndicates did — remember that, later, when someone asks who organized whom.',
           },
         ],
       },
@@ -139,7 +140,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'The men go back through the gates under the foremen’s smiles. You saved the organization and spent its faith. In the canteens they are already arguing about whose nerve failed — and "the committee’s" is winning.',
+            text: 'The men go back through the gates under the foremen\'s smiles. You saved the organization and spent its faith. In the canteens they are already arguing about whose nerve failed — and "the committee\'s" is winning.',
           },
         ],
       },
@@ -152,13 +153,13 @@ export const ACT2_EVENTS: EventCard[] = [
     art: 'armory',
     prose: [
       {
-        text: 'Ilya puts it formally, which is how you know it is an ultimatum: an armed defense section, under his command, or he stops vouching for his people’s patience. "I am not asking to attack anyone. I am asking to stop attending funerals empty-handed."',
+        text: 'The faístas put it formally, which is how you know it is an ultimatum: defense groups, armed, under their own committee — or they stop vouching for their people\'s patience. Their delegate reads Durruti\'s own words from the confederation\'s press: "The people, armed, is the only guarantee the people has ever had." Then, his own: "I am not asking to attack anyone. I am asking to stop attending funerals empty-handed."',
       },
     ],
     choices: [
       {
         id: 'arm',
-        label: 'Authorize the defense section',
+        label: 'Authorize the defense groups',
         effect: {
           resources: { materiel: -8, heat: 5 },
           setFlags: ['armed-wing'],
@@ -166,17 +167,17 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'Crates move at night; a cellar becomes a range. The pickets stop being beaten, which everyone notices, and the movement now contains an army the size of a rumor, which everyone will eventually notice. Vera begins her next three sentences with "When this goes wrong—".',
+            text: 'Crates move at night; a quarry becomes a range. The pickets stop being beaten, which everyone notices, and the alliance now contains an armed force the size of a rumor, which everyone will eventually notice. The prietistas\' man begins his next three sentences with "When Madrid hears of this—".',
           },
         ],
       },
       {
         id: 'refuse',
-        label: 'Refuse — arms now means massacre later',
+        label: 'Refuse — pistols now means Casas Viejas later',
         effect: { moods: { hardliners: -6, moderates: 4 } },
         outcome: [
           {
-            text: 'Ilya hears you out, nods once, and leaves. He stops raising it, which is not the same as accepting it. His people drill with axe handles now, in a barn you are not supposed to know about.',
+            text: 'The delegate hears you out, nods once, and leaves. The faístas stop raising it, which is not the same as accepting it. Their people drill with staves now, in a barn in the vega you are not supposed to know about.',
           },
         ],
       },
@@ -186,7 +187,7 @@ export const ACT2_EVENTS: EventCard[] = [
         effect: { setFlags: ['armory-promise'], moods: { hardliners: -2, moderates: -1 } },
         outcome: [
           {
-            text: '"When." Ilya repeats the word like a coin he suspects is shaved. He accepts — and somewhere a ledger of your promises gains a line, in handwriting you will meet again.',
+            text: '"When." The delegate repeats the word like a coin he suspects is shaved. He accepts — and somewhere a ledger of the committee\'s promises gains a line, in handwriting you will meet again in July.',
           },
         ],
       },
@@ -198,7 +199,7 @@ export const ACT2_EVENTS: EventCard[] = [
     weight: 15,
     prose: [
       {
-        text: 'A deputy minister’s aide approaches Vera at a christening, of all places: his principal would welcome "an informal understanding with responsible elements of the opposition." Vera reports it verbatim, hands flat on the table, declaring nothing.',
+        text: 'The civil governor\'s secretary approaches the prietistas at a christening, of all places: his principal would welcome "an informal understanding with the responsible elements of the workers\' movement." The prietistas\' man reports it verbatim, hands flat on the table, advocating nothing.',
       },
     ],
     choices: [
@@ -211,7 +212,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'Vera meets the aide monthly over chess neither of them finishes. Nothing is conceded; much is learned. The risk is not the talks — it is the day the talks become known, and they always become known.',
+            text: 'The prietistas meet the secretary monthly over chess neither of them finishes. Nothing is conceded; much is learned — including, eventually, which officers the governor no longer trusts. The risk is not the talks. It is the day the talks become known, and they always become known.',
           },
         ],
       },
@@ -224,7 +225,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'WE DO NOT BARGAIN IN PANTRIES runs above a facsimile of the aide’s card. The regime is embarrassed; the aide is reassigned somewhere with worse weather. Vera says only: "That door does not open twice."',
+            text: 'THE WORKERS DO NOT BARGAIN IN PANTRIES runs above a facsimile of the secretary\'s card. The Gobierno Civil is embarrassed; the secretary is reassigned somewhere with worse weather. The prietistas\' man says only: "That door does not open twice."',
           },
         ],
       },
@@ -237,7 +238,7 @@ export const ACT2_EVENTS: EventCard[] = [
     art: 'funeral',
     prose: [
       {
-        text: 'The fortieth-day memorial for the Northern Mill dead falls on a market Sunday. The families want a procession from the mill gate to the cemetery — three kilometers through the heart of the city. The police have denied the permit. The families are walking anyway.',
+        text: 'The month\'s mind for the dead of the Fábrica del Norte falls on a market Sunday. The families want a procession from the mill gate to the cemetery — three kilometers through the heart of Vallarga. The Gobierno Civil has denied the permit under the state of alarm. The families are walking anyway.',
       },
     ],
     choices: [
@@ -250,7 +251,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'Forty thousand walk in a silence that swallows the cavalry detachment shadowing the route — no one gives the troopers so much as a glance, which unnerves them more than stones would. At the graves, no speeches. The silence was the speech.',
+            text: 'Forty thousand walk in a silence that swallows the squadron of Asaltos shadowing the route — no one gives the guardias so much as a glance, which unnerves them more than stones would. At the graves, no speeches. The silence was the speech.',
           },
         ],
       },
@@ -260,7 +261,7 @@ export const ACT2_EVENTS: EventCard[] = [
         effect: { resources: { legitimacy: -3 }, moods: { hardliners: -4, labor: -3, moderates: 2 } },
         outcome: [
           {
-            text: 'The families walk alone and the city walks with them — without you. The day belongs to the dead and to whoever stood with them, and the rows take note of who didn’t.',
+            text: 'The families walk alone and the city walks with them — without you. The day belongs to the dead and to whoever stood with them, and the rows take note of who didn\'t.',
           },
         ],
       },
@@ -272,7 +273,7 @@ export const ACT2_EVENTS: EventCard[] = [
     weight: 15,
     prose: [
       {
-        text: 'Mira wants to graduate from pamphlets to a weekly paper — masthead, serial, prices column, the works. "Pamphlets are shouting," she says. "A newspaper is a voice that comes back every week. People set their clocks by a voice."',
+        text: 'The JSU wants to graduate from leaflets to a weekly paper — masthead, serial, prices column, the works. "Leaflets are shouting," the section secretary says. "A newspaper is a voice that comes back every week. People set their clocks by a voice."',
       },
     ],
     choices: [
@@ -286,7 +287,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'THE WHISTLE, four pages, price one kopek or one good rumor. By the third issue, dockers read it aloud at the noon break and the police pay a full ruble for confiscated copies — making you, Mira notes, the only profitable press in the city.',
+            text: 'EL DESPERTAR, four pages, price ten céntimos or one good rumor. By the third issue, dockers read it aloud at the noon break and the Brigada Social pays a full peseta for confiscated copies — making it, the JSU notes, the only profitable press in the city.',
           },
         ],
       },
@@ -296,7 +297,7 @@ export const ACT2_EVENTS: EventCard[] = [
         effect: { moods: { students: -4 } },
         outcome: [
           {
-            text: 'Mira accepts the arithmetic of risk without agreeing with it. The press goes on jobbing pamphlets — louder, safer, forgettable. Somewhere in the city, people fail to set their clocks.',
+            text: 'The JSU accepts the arithmetic of risk without agreeing with it. The press goes on jobbing leaflets — louder, safer, forgettable. Somewhere in the city, people fail to set their clocks.',
           },
         ],
       },
@@ -308,7 +309,7 @@ export const ACT2_EVENTS: EventCard[] = [
     weight: 12,
     prose: [
       {
-        text: 'The washerwomen of the bread lines have organized themselves — rotas, dues, a list of merchants who shave the weights — and present themselves at the kitchens not as guests but as an organization proposing terms of alliance. Their chairwoman is twenty-three and has clearly read your pamphlets critically.',
+        text: 'The washerwomen of the bread queues have organized themselves — rotas, dues, a list of merchants who shave the weights — and present themselves at the comedores not as guests but as an organization proposing terms of alliance. Their chairwoman is twenty-three and has clearly read the alliance\'s manifesto critically.',
       },
     ],
     choices: [
@@ -321,13 +322,13 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'They bring three streets you could never enter and a discipline your committees should envy. Within a month the chairwoman is correcting your weight-fraud figures from the floor. Mira looks like she has met the future and is taking notes.',
+            text: 'They bring three streets the syndicates could never enter and a discipline the syndicates should envy. Within a month the chairwoman is correcting your weight-fraud figures from the floor. The JSU secretary looks like someone who has met the future and is taking notes.',
           },
         ],
       },
       {
         id: 'absorb-them',
-        label: 'Welcome them — under your committees',
+        label: 'Welcome them — under the syndicates',
         effect: { resources: { sympathizers: 3 }, moods: { hardliners: 1, labor: -2 } },
         outcome: [
           {
@@ -343,7 +344,7 @@ export const ACT2_EVENTS: EventCard[] = [
     weight: 12,
     prose: [
       {
-        text: 'Without asking anyone, Mira’s circle occupies the university rectorate over a tuition decree — banners from the windows, a samovar in the registrar’s office, and your movement’s name already chalked on the facade whether you claim it or not.',
+        text: 'Without asking anyone, the JSU section occupies the university rectorate over the expulsion of two scholarship students — banners from the windows, a JSU picket on the stair, and the alliance\'s name already chalked on the facade whether you claim it or not.',
       },
     ],
     choices: [
@@ -356,17 +357,17 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'Food goes in by basket and rope; lectures on political economy go out the same way. The rector negotiates after nine days rather than explain cavalry in the library to the trustees. Mira returns with the decree withdrawn and a new estimate of what asking permission is for.',
+            text: 'Food goes in by basket and rope; lectures on political economy come out the same way. The rector negotiates after nine days rather than explain Asaltos in the library to the claustro. The section returns with the expulsions reversed and a new estimate of what asking permission is for.',
           },
         ],
       },
       {
         id: 'order-out',
-        label: 'Order them out — wrong fight, wrong time',
+        label: 'Order them out — wrong fight, wrong month',
         effect: { moods: { students: -6, moderates: 3, hardliners: -1 } },
         outcome: [
           {
-            text: 'They file out on the third day, eyes forward. The decree stands. At the next meeting the students sit together, very straight, and vote together, and that is new.',
+            text: 'They file out on the third day, eyes forward. The expulsions stand. At the next committee the JSU sit together, very straight, and vote together, and that is new.',
           },
         ],
       },
@@ -378,7 +379,7 @@ export const ACT2_EVENTS: EventCard[] = [
     weight: 12,
     prose: [
       {
-        text: 'The owners answer organization with arithmetic of their own: the Brenner works locks out eight hundred men "pending removal of agitational elements" — a list of forty names, most of them yours.',
+        text: 'The owners answer organization with arithmetic of their own: the Brenner textile works locks out eight hundred hands "pending removal of agitational elements" — a list of forty names, most of them yours. The patronal has been reading the spring the same way you have, and it also intends to be ready.',
       },
     ],
     choices: [
@@ -391,7 +392,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'Soup, rent money, and a roster so no family falls through. The lockout holds six weeks and breaks when the owners’ orders book empties. The forty names go back through the gates — all forty, or no one works. That sentence cost you a treasury, and it was the cheapest thing you ever bought.',
+            text: 'Soup, rent money, and a roster so no family falls through. The lockout holds six weeks and breaks when the owners\' order book empties. The forty names go back through the gates — all forty, or nobody works. That sentence cost you a treasury, and it was the cheapest thing you ever bought.',
           },
         ],
       },
@@ -404,7 +405,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'Hunger does the agitating. Anger climbs — and so does the pawnshop ledger, and the rows learn that the movement watches its own go hungry when the lesson is convenient. Some lessons teach the teacher’s price.',
+            text: 'Hunger does the agitating. Anger climbs — and so does the pawnshop ledger, and the rows learn that the alliance watches its own go hungry when the lesson is convenient. Some lessons teach the teacher\'s price.',
           },
         ],
       },
@@ -416,7 +417,7 @@ export const ACT2_EVENTS: EventCard[] = [
     weight: 10,
     prose: [
       {
-        text: 'Two telegraph clerks, brothers, offer to pass copies of police wire traffic — raid orders travel by wire a day before they travel by wagon. Their price is membership, not money. They want to belong to something.',
+        text: 'Two telegraph clerks, brothers, offer to pass copies of the Gobierno Civil\'s wire traffic — search orders travel by wire a day before they travel by wagon. Their price is membership, not money. They want to belong to something.',
       },
     ],
     choices: [
@@ -426,7 +427,7 @@ export const ACT2_EVENTS: EventCard[] = [
         effect: { resources: { heat: -7, cadre: 1 }, setFlags: ['telegraph-taps'], moods: { hardliners: 2 } },
         outcome: [
           {
-            text: 'The wire copies arrive folded inside racing forms. Twice in a season you are elsewhere when the wagons arrive. The brothers sit in the back row at meetings, radiant, belonging.',
+            text: 'The wire copies arrive folded inside racing forms. Twice in a season the committee is elsewhere when the wagons arrive. The brothers sit in the back row at meetings, radiant, belonging.',
           },
         ],
       },
@@ -436,7 +437,7 @@ export const ACT2_EVENTS: EventCard[] = [
         effect: { moods: { moderates: 1, hardliners: -2 } },
         outcome: [
           {
-            text: 'You explain the arithmetic of their risk; they hear the arithmetic of your caution. A year from now every safehouse move will be a day slower than it needed to be, and you will not be able to prove that mattered, and it will.',
+            text: 'You explain the arithmetic of their risk; they hear the arithmetic of your caution. Come July, every warning will be a day slower than it needed to be, and you will not be able to prove that mattered, and it will.',
           },
         ],
       },
@@ -448,7 +449,7 @@ export const ACT2_EVENTS: EventCard[] = [
     weight: 12,
     prose: [
       {
-        text: 'A splinter cell you expelled last winter bombs the commercial court — a night watchman loses a hand; the marble loses a staircase. The morning papers print your movement’s name in the first sentence. Theirs appears in the fourth.',
+        text: 'A grouplet the alliance expelled last winter bombs the commercial court — a night watchman loses a hand; the marble loses a staircase. The morning papers print the alliance\'s name in the first sentence. Theirs appears in the fourth.',
       },
     ],
     choices: [
@@ -461,7 +462,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'Your statement names the cell, names the watchman, and pledges toward his surgeon’s bill. The respectable papers reprint it with surprise they don’t bother hiding. In the cellars, some of Ilya’s people mutter about washing hands in public.',
+            text: 'The statement names the grouplet, names the watchman, and pledges toward his surgeon\'s bill. The respectable papers reprint it with surprise they don\'t bother hiding. In the athenaeum cellars, some of the faístas mutter about washing hands in public.',
           },
         ],
       },
@@ -474,7 +475,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'The story feeds itself. By week’s end the bomb is yours in every parlor in the city, and the police requisition warrants agree. Silence, it turns out, is a confession in a louder font.',
+            text: 'The story feeds itself. By week\'s end the bomb is yours in every parlor in the city, and the Brigada Social\'s requisition warrants agree. Silence, it turns out, is a confession in a louder font.',
           },
         ],
       },
@@ -486,13 +487,13 @@ export const ACT2_EVENTS: EventCard[] = [
     weight: 10,
     prose: [
       {
-        text: 'A correspondent for a London weekly — rumpled, fluent, suspiciously well-informed about your printing arrangements — requests an interview with "the leadership of the movement everyone denies exists."',
+        text: 'A correspondent for a London weekly — rumpled, fluent, suspiciously well-informed about your printing arrangements — requests an interview with "the committee everyone in this city denies exists." Spain is becoming the story of the European summer, and he intends to file early.',
       },
     ],
     choices: [
       {
         id: 'grant',
-        label: 'Grant the interview, hooded lamp and all',
+        label: 'Grant the interview, shuttered room and all',
         effect: {
           resources: { legitimacy: 6, heat: 5 },
           setFlags: ['foreign-press'],
@@ -500,7 +501,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'The piece runs under THE PATIENT REVOLUTION and is reprinted in three capitals. The regime denies your existence again, at length, in an official communiqué — thereby confirming it in four languages.',
+            text: 'The piece runs under THE PATIENT REVOLUTION OF VALLARGA and is reprinted in three capitals. The Gobierno Civil denies the committee\'s existence again, at length, in an official communiqué — thereby confirming it in four languages.',
           },
         ],
       },
@@ -510,7 +511,7 @@ export const ACT2_EVENTS: EventCard[] = [
         effect: { moods: { hardliners: 1, students: -2 } },
         outcome: [
           {
-            text: 'He writes the piece anyway from rumor and police handouts, titled THE INVISIBLE CONSPIRACY. It is worse than anything you would have said, and twice as long.',
+            text: 'He writes the piece anyway from rumor and the Gobierno Civil\'s handouts, titled THE INVISIBLE CONSPIRACY. It is worse than anything you would have said, and twice as long.',
           },
         ],
       },
@@ -523,7 +524,7 @@ export const ACT2_EVENTS: EventCard[] = [
     art: 'garrison-kitchen',
     prose: [
       {
-        text: 'Goran mentions it almost in passing: a third of the women in the river kitchens have brothers or sons in the city garrison — conscripts from the same streets the movement feeds. The kitchens, it turns out, have been corresponding with the barracks for months. About soup, mostly. So far.',
+        text: 'The UGT secretary mentions it almost in passing: a third of the women in the Arrabal comedores have brothers or sons doing their service in the Cuartel — conscripts from the same streets the alliance feeds. The comedores, it turns out, have been corresponding with the barracks for months. About soup, mostly. So far.',
       },
     ],
     choices: [
@@ -537,17 +538,17 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'Nothing seditious travels — parcels, letters, news of home. What travels is the knowledge, settling over both ends of the line, that the people the garrison might someday be ordered against are the people who write to it. Some ammunition is bread.',
+            text: 'Nothing seditious travels — parcels, letters, news of home. What travels is the knowledge, settling over both ends of the line, that the people the Regimiento might someday be ordered against are the people who write to it. Some ammunition is bread.',
           },
         ],
       },
       {
         id: 'keep-clear',
-        label: 'Keep the kitchens clear of the barracks',
+        label: 'Keep the comedores clear of the barracks',
         effect: { moods: { moderates: 2, hardliners: -3 } },
         outcome: [
           {
-            text: 'Safer, certainly — a kitchen that writes to soldiers is a kitchen the prosecutors can name. The letters dwindle to holidays. The garrison stays a wall, and walls take orders.',
+            text: 'Safer, certainly — a comedor that writes to soldiers is a comedor the military prosecutors can name. The letters dwindle to saints\' days. The Cuartel stays a wall, and walls take orders.',
           },
         ],
       },
@@ -559,7 +560,7 @@ export const ACT2_EVENTS: EventCard[] = [
     weight: 14,
     prose: [
       {
-        text: 'The regime moves to close your window: a decree fixes the bread price and subsidizes the difference. The lines shorten. In the kitchens, a woman says "perhaps they’ve learned," and is not laughed at. This is what losing slowly sounds like.',
+        text: 'The Gobierno Civil moves to close your window: a decree fixes the bread price and subsidizes the difference. The queues shorten. In the comedores, a woman says "perhaps the Republic has learned," and is not laughed at. This is what losing slowly sounds like.',
       },
     ],
     choices: [
@@ -572,20 +573,20 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'Your people trace the subsidized grain: a third of it sold out the depot back doors at the old price, with the depot master’s brother-in-law on the customs side. THE WHISTLE prints the manifests. The decree’s authors learn that mercy administered by thieves compounds the grievance it was meant to bury.',
+            text: 'Your people trace the subsidized grain: a third of it sold out the depot\'s back doors at the old price, with the depot master\'s brother-in-law on the weighbridge. EL DESPERTAR prints the manifests. The decree\'s authors learn that mercy administered by thieves compounds the grievance it was meant to bury.',
           },
         ],
       },
       {
         id: 'claim-credit',
-        label: 'Claim the decree as your victory',
+        label: 'Claim the decree as the movement\'s victory',
         effect: {
           resources: { legitimacy: 4 },
           moods: { labor: 2, moderates: 2, hardliners: -3 },
         },
         outcome: [
           {
-            text: '"They did not lower the price out of kindness" runs on every wall by Sunday — and it is even true. Cheaper bread becomes your trophy instead of their pardon. Ilya points out, correctly, that you have just taught the city the regime responds to pressure, which cuts both ways.',
+            text: '"They did not lower the price out of kindness" runs on every wall by Sunday — and it is even true. Cheaper bread becomes your trophy instead of the governor\'s pardon. The faísta delegate points out, correctly, that you have just taught the city the state responds to pressure, which cuts both ways.',
           },
         ],
       },
@@ -597,30 +598,30 @@ export const ACT2_EVENTS: EventCard[] = [
     weight: 25,
     prose: [
       {
-        text: 'Vera requests a formal session and brings a prepared text, which from her is a thunderclap: the defense section disbands, or the professional committees — her lawyers, her clerks, her quiet magistrates — withdraw from the movement. "I will not notarize a militia," she says. Ilya, across the table, almost smiles.',
+        text: 'The prietistas request a formal session and bring a prepared text, which from them is a thunderclap: the defense groups disband, or the socialist minority — the lawyers, the councillors, the quiet magistrates — withdraws from the alliance. "I will not notarize a militia," their man says, reading Prieto\'s own wire. Across the table, the faísta delegate almost smiles.',
       },
     ],
     choices: [
       {
         id: 'disarm',
-        label: 'Disband the defense section',
+        label: 'Disband the defense groups',
         effect: {
           clearFlags: ['armed-wing'],
           moods: { moderates: 7, hardliners: -8 },
         },
         outcome: [
           {
-            text: 'The crates leave the cellar the way they came. Vera withdraws the text as gracefully as she produced it. Ilya says nothing at all in the session, which his people understand as instruction to begin remembering this.',
+            text: 'The crates leave the quarry the way they came. The prietistas withdraw the text as gracefully as they produced it. The faísta delegate says nothing at all in the session, which his people understand as instruction to begin remembering this.',
           },
         ],
       },
       {
         id: 'keep-arms',
-        label: 'The section stays',
+        label: 'The defense groups stay',
         effect: { moods: { moderates: -7, hardliners: 4 } },
         outcome: [
           {
-            text: 'Vera folds her text once and puts it away — a document now in reserve rather than in force. Two of her committees stop meeting "for the season." The movement keeps its rifles and begins paying for them in lawyers.',
+            text: 'The prietistas\' man folds the text once and puts it away — a document now in reserve rather than in force. Two of their committees stop meeting "for the season." The alliance keeps its pistols and begins paying for them in lawyers.',
           },
         ],
       },
@@ -632,7 +633,7 @@ export const ACT2_EVENTS: EventCard[] = [
     weight: 30,
     prose: [
       {
-        text: 'The owners blink: a nine-percent rise, the foremen’s fines abolished, no reprisals against the committees — provided work resumes Monday. It is less than the demands and more than anyone has won in living memory. The rows will take it if you tell them to. That is precisely the danger.',
+        text: 'The patronal blinks: a nine-percent rise, the foremen\'s fines abolished, no reprisals against the syndicates — provided work resumes Monday. It is less than the demands and more than anyone has won in living memory. The rows will take it if the committee tells them to. That is precisely the danger.',
       },
     ],
     choices: [
@@ -659,7 +660,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'You hold out for the full demands. The owners, having offered settlement once, settle instead into siege. The strike becomes a test of larders — and the regime, watching its tax receipts, begins to take a professional interest in ending it for them.',
+            text: 'You hold out for the full demands. The patronal, having offered settlement once, settles instead into siege. The strike becomes a test of larders — and the Gobierno Civil, watching its tax receipts, begins to take a professional interest in ending it for them.',
           },
         ],
       },
@@ -671,7 +672,7 @@ export const ACT2_EVENTS: EventCard[] = [
     weight: 10,
     prose: [
       {
-        text: 'The regime discovers publicity: a flood of penny sheets paints you as arsonists in foreign pay, complete with a forged letter bearing a signature almost like yours. The forgery is competent. The prose, Mira notes professionally, is not.',
+        text: 'The right discovers publicity: a flood of penny sheets paints the alliance as incendiaries in Moscow\'s pay, complete with a forged circular bearing a signature almost like the committee\'s. The forgery is competent. The prose, the JSU notes professionally, is not.',
       },
     ],
     choices: [
@@ -684,7 +685,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'Mira reprints their forgery side by side with your actual hand and a list of the errors, under the title THEY CANNOT EVEN LIE CAREFULLY. The city, which knows good mockery when it reads it, chooses its side of the laugh.',
+            text: 'EL DESPERTAR reprints their forgery beside the committee\'s actual hand and a list of the errors, under the title THEY CANNOT EVEN LIE CAREFULLY. The city, which knows good mockery when it reads it, chooses its side of the laugh.',
           },
         ],
       },
@@ -694,7 +695,7 @@ export const ACT2_EVENTS: EventCard[] = [
         effect: { resources: { legitimacy: -4 }, moods: { moderates: 2, students: -2 } },
         outcome: [
           {
-            text: 'Some of the mud dries. Some of it sets. A season later you still meet people who mention the foreign money with the confidence of those who read it somewhere, and "somewhere" has become its own citation.',
+            text: 'Some of the mud dries. Some of it sets. A season later you still meet people who mention the Moscow gold with the confidence of those who read it somewhere, and "somewhere" has become its own citation.',
           },
         ],
       },
@@ -706,7 +707,7 @@ export const ACT2_EVENTS: EventCard[] = [
     weight: 10,
     prose: [
       {
-        text: 'The customs warehouse burns in the night — spectacularly, insured, and empty, which is its own kind of suspicious. By dawn the police version is settled: revolutionary arson. By noon two of your dockers are arrested on the strength of having been asleep nearby.',
+        text: 'The customs warehouse burns in the night — spectacularly, insured, and empty, which is its own kind of suspicious. By dawn the Gobierno Civil\'s version is settled: revolutionary arson. By noon two of your dockers are detained under the state of alarm on the strength of having been asleep nearby.',
       },
     ],
     choices: [
@@ -719,7 +720,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'Your committee of inquiry — a retired fire assessor, a notary, the chairwoman of the washerwomen — publishes within the week: the fire began in a locked office, behind the only door with a new lock. The insurance question asks itself. The dockers walk free; the warehouse owner travels abroad for his health.',
+            text: 'Your committee of inquiry — a retired fire assessor, a notary, the chairwoman of the washerwomen — publishes within the week: the fire began in a locked office, behind the only door with a new lock. The insurance question asks itself. The dockers walk free; the warehouse owner travels to Biarritz for his health.',
           },
         ],
       },
@@ -729,7 +730,7 @@ export const ACT2_EVENTS: EventCard[] = [
         effect: { resources: { legitimacy: -4 }, moods: { labor: -4, hardliners: 1 } },
         outcome: [
           {
-            text: 'The dockers are convicted on the testimony of a night watchman who was demonstrably at a christening. The rows conclude the movement defends principles, not people. It is the kind of distinction that empties meeting halls.',
+            text: 'The dockers are convicted on the testimony of a night watchman who was demonstrably at a baptism. The rows conclude the alliance defends principles, not people. It is the kind of distinction that empties meeting halls.',
           },
         ],
       },
@@ -741,7 +742,7 @@ export const ACT2_EVENTS: EventCard[] = [
     weight: 12,
     prose: [
       {
-        text: 'They take the press’s operator — old Pavel, ink to the elbows — in the street, mid-errand, on a charge invented while he stood there. Mira arrives breathless: the type cases are hidden but Pavel knows where, and Pavel is seventy, and interrogators know what seventy means.',
+        text: 'They take the press\'s operator — old Pau, ink to the elbows — in the street, mid-errand, on a charge improvised under the state of alarm while he stood there. The JSU secretary arrives breathless: the type cases are hidden but Pau knows where, and Pau is seventy, and the Brigada Social\'s interrogators know what seventy means.',
       },
     ],
     choices: [
@@ -754,20 +755,20 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'A transfer wagon, two bribed minutes, a crowbar. Pavel is over the border by Thursday, complaining about foreign typefaces. The operation cost you an organizer arrested in the confusion — a younger man, who knows less, which was the arithmetic, and everyone can do the arithmetic.',
+            text: 'A transfer wagon, two bribed minutes, a crowbar. Pau is over the French border by Thursday, complaining about foreign typefaces. The operation cost you an organizer detained in the confusion — a younger man, who knows less, which was the arithmetic, and everyone can do the arithmetic.',
           },
         ],
       },
       {
         id: 'lawyer',
-        label: 'Vera’s lawyers, loudly',
+        label: 'The prietistas\' lawyers, loudly',
         effect: {
           resources: { materiel: -6, legitimacy: 3 },
           moods: { moderates: 4, students: 1, hardliners: -2 },
         },
         outcome: [
           {
-            text: 'The invented charge meets an actual jurist and dissolves on contact; the prosecutor’s improvisation becomes a small scandal in the law gazette. Pavel is out in nine days, having taught his cellmates to read. The press moves anyway. Twice.',
+            text: 'The improvised charge meets an actual jurist and dissolves on contact; the prosecutor\'s invention becomes a small scandal in the law gazette. Pau is out in nine days, having taught his cellmates to read. The press moves anyway. Twice.',
           },
         ],
       },
@@ -780,7 +781,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'The type cases move the same night; the operation survives intact. Pavel draws four years. Mira sets the next issue herself, badly, the columns crooked — and above the masthead, in perfect type, a single line: FOUNDED BY P. The crooked columns are the editorial.',
+            text: 'The type cases move the same night; the operation survives intact. Pau draws four years. The JSU secretary sets the next issue herself, badly, the columns crooked — and above the masthead, in perfect type, a single line: FOUNDED BY P. The crooked columns are the editorial.',
           },
         ],
       },
@@ -792,7 +793,7 @@ export const ACT2_EVENTS: EventCard[] = [
     weight: 12,
     prose: [
       {
-        text: 'Through Vera’s channel: the ministry is drafting a limited amnesty — exile commuted, certain categories of prisoner released — timed for the sovereign’s name day. They want quiet streets in exchange. The channel asks, delicately, whether quiet can be arranged.',
+        text: 'Through the prietistas\' channel: the governor is drafting a request to Madrid — the state-of-alarm detainees of the spring released, certain prosecutions dropped, timed for the feast of the city\'s patron. He wants quiet streets in exchange. The channel asks, delicately, whether quiet can be arranged.',
       },
     ],
     choices: [
@@ -805,7 +806,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'The name day passes in suspicious tranquility; the prison gates open on schedule. Among the released: three organizers you had written off and a man who taught Ilya his letters. The price was a quiet you can never prove you sold, paid to people who will never admit they bought it.',
+            text: 'The feast passes in suspicious tranquility; the cells open on schedule. Among the released: three organizers you had written off and a man who taught the faísta delegate his letters. The price was a quiet you can never prove you sold, paid to people who will never admit they bought it.',
           },
         ],
       },
@@ -818,7 +819,7 @@ export const ACT2_EVENTS: EventCard[] = [
         },
         outcome: [
           {
-            text: 'The amnesty shrinks in committee to a handful of debtors and one elderly forger. The streets stay loud. The prisoners stay prisoners — principled ones now, in your telling, though no one has asked them which they’d rather be.',
+            text: 'The request shrinks in Madrid to a handful of debtors and one elderly forger. The streets stay loud. The prisoners stay prisoners — principled ones now, in your telling, though no one has asked them which they\'d rather be.',
           },
         ],
       },
