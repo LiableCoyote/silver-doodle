@@ -214,7 +214,7 @@ const SCENES: Record<string, ComponentType> = {
   ),
 
   raid: () => (
-    <svg viewBox="0 0 240 110" role="img" aria-label="A door off its hinges, lantern beams">
+    <svg viewBox="0 0 240 110" role="img" aria-label="A door off its hinges, a tricorn in the lantern beams">
       <rect x="36" y="14" width="64" height="84" fill="currentColor" />
       <g transform="rotate(16 100 98)">
         <rect x="52" y="22" width="48" height="80" fill="var(--paper)" stroke="currentColor" stroke-width="5" />
@@ -222,6 +222,13 @@ const SCENES: Record<string, ComponentType> = {
       <g fill={ACCENT} opacity="0.55">
         <polygon points="240,8 240,34 116,72 110,58" />
         <polygon points="240,52 240,78 128,86 124,72" />
+      </g>
+      {/* The figure in the doorway: the flat, wide-brimmed tricorn. */}
+      <g fill={ACCENT}>
+        <rect x="57" y="44" width="22" height="4" rx="2" />
+        <rect x="63" y="39" width="10" height="5" />
+        <circle cx="68" cy="53" r="5" />
+        <rect x="60" y="57" width="16" height="28" rx="3" />
       </g>
     </svg>
   ),

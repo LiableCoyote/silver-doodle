@@ -22,14 +22,14 @@ const DISTRICTS: Array<{
   /** Movement-rooted districts shade with sympathizers. */
   movement: boolean;
 }> = [
-  { id: 'university', label: 'UNIVERSITY', x: 4, y: 6, w: 82, h: 50, movement: true },
-  { id: 'ministries', label: 'MINISTRIES', x: 94, y: 6, w: 86, h: 40, movement: false },
-  { id: 'palace', label: 'PALACE', x: 188, y: 4, w: 84, h: 38, movement: false },
-  { id: 'barracks', label: 'BARRACKS', x: 280, y: 6, w: 76, h: 50, movement: false },
-  { id: 'market', label: 'MARKET', x: 94, y: 54, w: 106, h: 38, movement: false },
-  { id: 'mills', label: 'THE MILLS', x: 4, y: 130, w: 146, h: 64, movement: true },
-  { id: 'river', label: 'RIVER DISTRICT', x: 158, y: 130, w: 102, h: 64, movement: true },
-  { id: 'docks', label: 'DOCKS', x: 268, y: 130, w: 88, h: 64, movement: true },
+  { id: 'university', label: 'LA UNIVERSIDAD', x: 4, y: 6, w: 82, h: 50, movement: true },
+  { id: 'ministries', label: 'GOBIERNO CIVIL', x: 94, y: 6, w: 86, h: 40, movement: false },
+  { id: 'palace', label: 'CASA-CUARTEL', x: 188, y: 4, w: 84, h: 38, movement: false },
+  { id: 'barracks', label: 'EL CUARTEL', x: 280, y: 6, w: 76, h: 50, movement: false },
+  { id: 'market', label: 'EL MERCADO', x: 94, y: 54, w: 106, h: 38, movement: false },
+  { id: 'mills', label: 'LAS FÁBRICAS', x: 4, y: 130, w: 146, h: 64, movement: true },
+  { id: 'river', label: 'EL ARRABAL', x: 158, y: 130, w: 102, h: 64, movement: true },
+  { id: 'docks', label: 'EL PUERTO', x: 268, y: 130, w: 88, h: 64, movement: true },
 ];
 
 function UnitBuilding({
@@ -65,7 +65,7 @@ export function CityMap({ state }: { state: GameState }) {
   const refused = (id: UnitId) => state.units.find((u) => u.id === id)?.refused ?? false;
 
   return (
-    <svg viewBox="0 0 360 200" role="img" aria-label="The city" id="city-map">
+    <svg viewBox="0 0 360 200" role="img" aria-label="Vallarga" id="city-map">
       {/* Districts */}
       {DISTRICTS.map((d) => (
         <g key={d.id}>
@@ -90,7 +90,7 @@ export function CityMap({ state }: { state: GameState }) {
         </g>
       ))}
 
-      {/* The river and its bridges */}
+      {/* El Turbio and its bridges */}
       <polygon points="0,98 360,78 360,106 0,126" fill="currentColor" opacity="0.16" />
       <path d="M20 114 q20 -5 40 -3 M250 90 q20 -5 40 -3" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.3" />
       <rect x="78" y="86" width="12" height="36" fill="var(--paper)" stroke="currentColor" stroke-width="1.5" />
@@ -127,10 +127,11 @@ export function CityMap({ state }: { state: GameState }) {
         <rect x="151" y="71" width="6" height="9" fill="var(--paper)" />
       </UnitBuilding>
       <UnitBuilding unit="guard" refused={refused('guard')}>
-        <rect x="206" y="20" width="44" height="14" />
-        <polygon points="220,20 228,12 236,20" />
-        <line x1="228" y1="12" x2="228" y2="2" />
-        <polygon points="228,2 240,5 228,8" fill={refused('guard') ? ACCENT : 'none'} />
+        {/* La casa-cuartel: a fortified house and its walled yard. */}
+        <rect x="206" y="12" width="26" height="18" />
+        <rect x="232" y="22" width="18" height="8" />
+        <line x1="212" y1="12" x2="212" y2="2" />
+        <polygon points="212,2 224,5 212,8" fill={refused('guard') ? ACCENT : 'none'} />
       </UnitBuilding>
 
       {/* The mills: chimneys, smoking unless the strike holds. */}
@@ -147,7 +148,8 @@ export function CityMap({ state }: { state: GameState }) {
         </g>
       )}
 
-      {/* Landmarks the campaign leaves behind. */}
+      {/* Landmarks the campaign leaves behind: the comedor's kettle,
+          the CNT print shop, the October 1934 memorial. */}
       {flags.includes('mutual-aid') && (
         <path d="M196 162 h18 a9 9 0 0 1 -18 0 Z" fill={ACCENT} />
       )}
