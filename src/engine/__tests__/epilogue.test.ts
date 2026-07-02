@@ -24,12 +24,12 @@ describe('generateEpilogue', () => {
 
     const joined = epilogue.beats.join(' ');
     expect(joined).toContain('signature');
-    expect(joined.toLowerCase()).toContain('list has a second page');
-    expect(joined.toLowerCase()).toContain('army inside the movement');
-    expect(joined).toContain('Mira');
+    expect(joined.toLowerCase()).toContain('checas');
+    expect(joined.toLowerCase()).toContain('armed force inside the alliance');
+    expect(joined).toContain('JSU');
     expect(epilogue.debts).toBeGreaterThanOrEqual(4);
-    expect(epilogue.beats[0]).toContain('morning after begins');
-    expect(epilogue.beats[epilogue.beats.length - 1]).toContain('second revolution');
+    expect(epilogue.beats[0]).toContain('morning after the 19th');
+    expect(epilogue.beats[epilogue.beats.length - 1]).toContain('second war');
   });
 
   it('a clean win has few debts and a short epilogue', () => {
@@ -44,7 +44,7 @@ describe('generateEpilogue', () => {
     (status) => {
       const state = withStatus(status);
       const epilogue = generateEpilogue(state);
-      expect(epilogue.beats[0]).not.toContain('morning after begins');
+      expect(epilogue.beats[0]).not.toContain('morning after the 19th');
       expect(epilogue.beats[0].length).toBeGreaterThan(0);
     },
   );
@@ -68,7 +68,7 @@ describe('composeDispatch', () => {
     };
     const dispatch = composeDispatch(prev, next);
     expect(dispatch).toBeDefined();
-    expect(dispatch).toContain('Word is already moving');
+    expect(dispatch).toContain('broken with its officers');
   });
 
   it('a quiet turn with no notable deltas returns undefined', () => {

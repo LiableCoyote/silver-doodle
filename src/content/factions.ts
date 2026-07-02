@@ -3,7 +3,10 @@ import type { FactionId, FactionState } from '../engine/factions';
 import type { RNG } from '../engine/rng';
 
 /**
- * Each faction is a character, not a meter. Tone shows mood before the
+ * The alliance's four tendencies, each voiced by the real national
+ * figure whose tendency it is — arriving by telegram, printed column,
+ * speech, or visit. They are not committee members; they are the
+ * standard-bearers the local people quote. Tone shows mood before the
  * number does. The engine logs facts; this file turns them into voice.
  */
 export interface FactionVoice {
@@ -21,150 +24,151 @@ export interface FactionVoice {
 
 export const VOICES: Record<FactionId, FactionVoice> = {
   moderates: {
-    name: 'Vera',
-    title: 'the Moderates',
+    name: 'Prieto',
+    title: 'los prietistas',
     bands: [
       [
-        'Vera returns your letters unopened now. Her secretary says she is "consulting with friends."',
-        '"I will not put my people in front of guns to decorate your legend." She does not raise her voice. She never does.',
+        'The prietistas no longer bring their deputies to the committee. Their secretary attends, takes no notes, and reports — one assumes — that the alliance has chosen adventure. Prieto\'s last telegram was three words: "You were warned."',
+        '"I have spent my life keeping the Republic alive against its enemies. I did not expect to spend this spring keeping it alive against its friends." The column runs in El Liberal; everyone in the city knows which friends.',
       ],
       [
-        '"You ask me to defend this at dinner tables you\'ve never sat at." Vera\'s notes have gotten shorter.',
-        '"There were names I could once mention to the magistrates. I no longer mention names."',
+        'The prietista councillors answer the committee\'s letters a week late now, in the passive voice. In Madrid, Prieto is fighting his own party\'s left for the party\'s soul; he has little patience left over for a provincial alliance that keeps proving Largo\'s point.',
+        '"Every broken window in Vallarga is a vote for the generals. I can be persuaded of many things, but not that arson is a program." The rebuke is printed, which means it was meant to travel.',
       ],
       [
-        '"It can be managed," Vera says, which from her is neither yes nor no.',
-        'Vera proposes language for the next pamphlet. Half of it is hedges. The other half is good.',
+        '"It can be sustained," the prietistas\' man says of this month\'s course, which from that quarter is neither blessing nor curse but a measured willingness to keep paying.',
+        'The prietistas propose language for the alliance\'s next manifesto. Half of it is guardrails. The other half, it must be said, is good.',
       ],
       [
-        '"The professional classes are listening. Do not give them a reason to stop." Vera almost smiles.',
-        'Vera brings two magistrates to the back room. They do not give their names. They do not need to.',
+        '"The Republic\'s institutions are listening to this city. Do not give them a reason to stop." The telegram is signed D. Indalecio Prieto, which he does only when he is nearly pleased.',
+        'Two magistrates and a colonel of carabineros dine, discreetly, with the alliance\'s lawyers. The prietistas arranged the table. Nobody gives a toast; everybody understands the menu.',
       ],
       [
-        '"I have waited my whole life to say this plainly: it is working." Vera\'s hand shakes on the teacup.',
-        'Vera drafts statutes for a government that does not exist yet. "Someone must," she says.',
+        '"For the first time since October I permit myself the thought that we may get through this summer standing up." Prieto\'s column is almost gentle. The old pessimist\'s hand shakes a little on the optimism.',
+        'The prietistas are drafting municipal ordinances for contingencies they decline to name. "Someone must be ready to govern the day after," their secretary says. "Whichever day after it turns out to be."',
       ],
     ],
     reactions: {
-      lay_low: '"Discipline. Finally." Vera approves, in her way: she stops drafting her resignation.',
-      fundraise: '"Respectable money respects quiet bookkeeping. This was well done."',
-      agitate: '"You have made us look like arsonists. I will be explaining this for a month."',
-      outreach: '"Talking to officers. At last, a sedition I can defend in a courtroom."',
+      lay_low: '"Discipline, at last. The Republic\'s enemies feed on our noise; a quiet week starves somebody." The prietistas approve, in their fashion: they stop drafting their withdrawal.',
+      fundraise: '"Sound books are a political position. This was well done." High praise, from the tendency that reads ledgers for pleasure.',
+      agitate: '"You have handed the right a photograph it will use for a year. I will be explaining this mitin in the Cortes corridor for a month." The prietista rebuke arrives before the posters are dry.',
+      outreach: '"Talking to officers — finally, the sedition I have recommended all spring. The Republic will be saved inside the barracks or not at all."',
     },
     departure:
-      'Vera resigns by letter, hand-delivered, sealed. Three pages, no anger in any of them — which is how you know it is final. She thanks you for "an education in the limits of persuasion." The professional committees go with her: the lawyers, the sympathetic clerks, the money that asked no questions. The room is louder without her, and smaller.',
+      'The prietistas withdraw by letter on Cortes stationery, hand-delivered, courteous to the last comma — which is how you know it is final. With them goes what they always were: the ministries\' ear, the magistrates who took the alliance\'s calls, the money that voted Republican and asked only for calm. Prieto\'s valediction runs in El Liberal that Sunday: "We wanted to save the Republic with these people. They preferred to be right." The room is more unanimous without them, and much smaller.',
     betrayal:
-      'Within the week, the magistrates have names. Vera always did keep meticulous files.',
+      'Within the fortnight the civil governor knows the alliance\'s finances to the céntimo. The prietistas kept meticulous files — they were always going to be meticulous about something.',
   },
 
   hardliners: {
-    name: 'Ilya',
-    title: 'the Hardliners',
+    name: 'Durruti',
+    title: 'los faístas',
     bands: [
       [
-        'Ilya has stopped arguing in meetings. He sits by the door and cleans his nails with a knife, which is an argument.',
-        '"You are building a debating society with a martyrs\' wall." Ilya doesn\'t look at you when he says it.',
+        'The faístas have stopped arguing in the committee. They sit by the door with their caps on, which in their grammar is a complete sentence.',
+        '"You are building a filing cabinet with a martyrs\' shelf." The phrase goes around the athenaeums in a week; it is not clear Durruti said it, and it does not matter — his people needed it said.',
       ],
       [
-        '"Every month we wait, they hang someone we could have armed." Ilya\'s patience is a rope, fraying.',
-        'Ilya keeps a list of comrades taken. He reads it aloud now, at the end of meetings, uninvited.',
+        '"Every week you wait, they move another officer into place. The conspiracy does not table its motions." The faísta delegate reads the sentence from a paper, which means it came from higher, which means Barcelona is watching.',
+        'The faístas keep their own list now — of comrades taken since February. They read it at the end of meetings, uninvited, and the reading gets longer.',
       ],
       [
-        '"Fine. We do it your way. This season." Ilya cracks his knuckles like he\'s counting them.',
-        'Ilya drills the new cadre in the cellar. He\'s good with them — patient, even. It surprises everyone but the cadre.',
+        '"Good. We do it your way. This month." The faísta delegate cracks the window and smokes at it, watching the street the way sailors watch weather.',
+        'The faístas drill the defense groups in the quarry outside town. They are good with the young ones — patient, even. It surprises everyone except the young ones.',
       ],
       [
-        '"Now you see it. Now you finally see it." Ilya is almost warm tonight, which means something is burning somewhere.',
-        'Ilya embraces you, once, hard, like a man testing a load-bearing wall.',
+        '"Now the city is learning what it is for." The delegate is almost warm this week, which means something somewhere is moving that he trusts.',
+        'A wire from Barcelona, unsigned, in Durruti\'s unmistakable register: "Tell Vallarga the confederation sees them. Tell them also: rifles, rifles, rifles."',
       ],
       [
-        '"I used to dream of this. Now I sleep instead." Ilya laughs at his own joke. No one knew he had one.',
-        'Ilya\'s people walk taller. He tells them: "Patience won this. Write that down before I deny it."',
+        '"We have carried a new world here, in our hearts." The old line, worn smooth as a rail — but the delegate says it quietly this time, like a man checking his pocket for something he is finally about to spend.',
+        'The faístas walk taller and drill in daylight. "Patience did this," their delegate concedes, "write it down before I deny it" — Durruti\'s own joke, borrowed with the confidence of people who expect to meet him soon.',
       ],
     ],
     reactions: {
-      agitate: '"More. Louder. While they\'re still deciding whether to be afraid." Ilya is grinning.',
-      lay_low: '"Hide, then. The dead are very discreet too." Ilya leaves before the vote.',
-      organize: '"Study circles." Ilya spits. But he sends two of his best to teach in them anyway.',
-      outreach: '"Write to the butchers, then. Ask them how they like their bread." Ilya cleans the knife he wasn\'t holding a moment ago.',
+      agitate: '"More. Louder. While the casinos are still deciding whether to be afraid." The faístas are grinning for once.',
+      lay_low: '"Hide, then. The cemeteries are very discreet too." The delegate leaves before the vote is counted.',
+      organize: '"Athenaeums." The delegate spits, and then sends two of his best people to teach in them anyway, because that is also the tradition.',
+      outreach: '"Write to the soldiers, yes — and ask them where the armory keys are kept. A letter that does not mention rifles is a postcard."',
     },
     departure:
-      'Ilya doesn\'t write letters. He empties the armory in a night — rifles, the good press, four of your best organizers — and leaves the door standing open so you understand it wasn\'t theft, it was a verdict. On the table where the maps used to be: his list of the taken, weighted down with a single cartridge.',
+      'The faístas do not write letters. In one night the defense groups\' stores are gone — the pistols, the good duplicator, four of your best organizers of the young — and the door of the union hall is left standing open so you understand it was not theft but a verdict. On the committee table, weighted with a single cartridge: their list of the taken since February. Their delegate\'s last words in the doorway are Durruti\'s old ones, said without heat: "We are not afraid of ruins."',
     betrayal:
-      'A police circular names three safehouses, with sketches. Ilya knew them all. The cartridge on the table was for you to understand whose names came next.',
+      'The faístas do not inform — not to police. But the quarrel is published in their press, with dates and amounts and the names of everyone who counselled patience, and the Brigada Social reads the anarchist papers more carefully than anyone.',
   },
 
   labor: {
-    name: 'Goran',
-    title: 'the Labor wing',
+    name: 'Largo Caballero',
+    title: 'la UGT',
     bands: [
       [
-        '"My people eat speeches now. Twelve-hour shifts and your name is a curse in the canteens." Goran says it flat, like a foreman reading tonnage.',
-        'Goran stops bringing the shift rosters. "Why count what you\'re going to spend like water?"',
+        '"The Casa del Pueblo did not survive October to be spent by a committee." The UGT\'s secretary says it flat, like a man reading tonnage. The strike fund ledger has not been brought to a meeting in a month.',
+        'The mill locals have stopped forwarding their rolls. When the UGT stops counting for you, you have already been subtracted.',
       ],
       [
-        '"The mills gave you four hundred hands. Show me what you gave the mills." Goran waits. He can wait all night.',
-        '"Bread first. Doctrine after supper." Goran\'s mood is arithmetic, and the sums are short.',
+        '"The unions gave this alliance four thousand hands. Show me what the alliance gave the unions." The secretary waits. He is a patient man with an impatient ledger.',
+        'A wire from Madrid, from the old man himself, maximal as ever: "The proletariat does not lend itself. It leads or it withdraws." The locals read it aloud in the canteens, approvingly, twice.',
       ],
       [
-        'Goran reports steady numbers from the river district. "Steady," from him, is high praise.',
-        '"The men ask if it\'s worth it. I tell them ask me payday." Goran shrugs. "It\'s a system."',
+        'The UGT reports steady dues from the mills. "Steady," in that house\'s dialect, is high praise.',
+        '"The men ask if the alliance is worth the levy. I tell them: ask me after the summer." The secretary shrugs. "It is a system."',
       ],
       [
-        '"Strike fund is fat. Kitchens are stocked. You could call out three mills tomorrow and feed them for a month." Goran allows himself one cigarette.',
-        'Goran brings his daughter to the meeting. He doesn\'t say why. Everyone understands why.',
+        '"Strike fund is fat, the comedores are stocked, and the mill committees could stop this city in a morning and feed it for a month." The secretary allows himself one cigarette on the Casa del Pueblo steps.',
+        'Largo speaks to eighty thousand in Madrid and the wire services carry one line to every Casa del Pueblo in Spain: the working class is done waiting for permission. In Vallarga\'s mills, the line is chalked on the time-clock.',
       ],
       [
-        '"Forty years my family fed this city. First time the city might feed us back." Goran\'s voice doesn\'t change. His eyes do.',
-        'The canteens sing now. Goran pretends it\'s bad for discipline and knows every verse.',
+        '"Forty years the mills fed this city. First season the city might feed us back." The secretary\'s voice does not change when he says it. His hands do.',
+        'The canteens sing now — the old hymns and the new ones. The UGT pretends it is bad for output and knows every verse.',
       ],
     ],
     reactions: {
-      organize: '"Mutual aid filled two kitchens this week. That\'s two hundred families who know our name now." Goran nods slowly.',
-      fundraise: '"Money\'s money. Just remember whose rent it was first."',
-      agitate: '"Fine words. The overseers docked my whole floor a day\'s wage for listening to them."',
-      outreach: '"Half those conscripts are our boys in worse coats. About time someone wrote to them." Goran supplies the names of three sergeants\' mothers.',
+      organize: '"The mutual-aid rolls grew by two hundred families this week. That is two hundred families who know the Casa del Pueblo\'s address." The secretary nods slowly, which is his ovation.',
+      fundraise: '"Money is money. Just remember which shift\'s wages it was first."',
+      agitate: '"Fine speeches. The foremen docked my whole floor a day\'s pay for attending them." The ledger comes out; the ledger always comes out.',
+      outreach: '"Half those conscripts carry UGT cards or their fathers do. About time somebody wrote to them as family." The secretary supplies three sergeants\' mothers\' addresses from memory.',
     },
     departure:
-      'Goran takes the union rolls, the strike fund, and the kitchens — everything that feeds someone. "No hard feelings," he says, shaking your hand like a man closing an account. "But I buried two organizers this year, and you spent the wreaths on pamphlets." The river district goes dark to you the same night. Four hundred hands, withdrawn as one.',
+      'The UGT takes what feeds people: the strike fund, the comedor stores, the mill rolls, the Casa del Pueblo itself — theirs, after all, brick by subscription brick. The secretary shakes your hand like a man closing an account: "Nothing personal. But I buried two organizers this spring and the alliance spent the wreath money on posters." Madrid\'s wire arrives the next day, Largo at his most marmoreal: the UGT walks alone until the others learn seriousness. Four thousand hands, withdrawn as one.',
     betrayal:
-      'Goran doesn\'t inform — he negotiates. The factory owners get labor peace; the police get the names of everyone in the movement who isn\'t his. He\'d call it protecting his own. He always did.',
+      'The UGT does not go to the police; it goes to the governor, as an institution, with an institution\'s complaint — and the annexes to that complaint name every man in the alliance who is not theirs. They would call it regularizing the situation. They always did.',
   },
 
   students: {
-    name: 'Mira',
-    title: 'the Students',
+    name: 'Carrillo',
+    title: 'las Juventudes',
     bands: [
       [
-        'Mira\'s circle has stopped coming. She comes alone, sits in the back, and corrects the minutes — her only remaining loyalty.',
-        '"We gave you our years. You gave us minutes of meetings." Mira\'s voice cracks on "years," and she hates that it does.',
+        'The JSU section sends apologies to the committee now instead of delegates. Their energy has gone somewhere; you can hear it two streets away, organized, and no longer yours.',
+        '"We gave the alliance our evenings and our shoe leather. It gave us minutes of meetings." The section secretary is nineteen and does not intend to be nineteen forever.',
       ],
       [
-        '"Half my cell thinks you\'ve gone gray inside. I\'m running out of counterarguments." Mira looks tired in a way no twenty-year-old should.',
-        'Mira\'s pamphlets have gotten sharper, and they\'ve started quoting people who aren\'t you.',
+        '"Half my section thinks the committee has gone grey inside. I am running out of counter-arguments." The secretary looks tired in a way particular to the very young.',
+        'The JSU\'s wall newspaper has gotten sharper, and it has started quoting people who are not you.',
       ],
       [
-        'Mira argues both sides of everything, brilliantly, then votes with the majority and sulks about it.',
-        '"It\'s slow. I know it has to be slow. I know it. Tell me again why it has to be slow."',
+        'The JSU argues both sides of every motion, brilliantly, then votes with the majority and sulks about it in perfect formation.',
+        '"It is slow. I know it must be slow. I know it. Tell me again why it must be slow." The secretary folds the agenda into smaller and smaller squares.',
       ],
       [
-        'Mira\'s circle doubled again. They hold seminars in the medical faculty now, behind a lecture on anatomy. "Fitting," she says.',
-        '"I read your last dispatch to forty people in a cellar and nobody breathed." Mira is glowing and pretending not to.',
+        'The section doubled again — they run night classes in the athenaeum now behind a lecture on gymnastics. "Fitting," the secretary says. Carrillo\'s circular commends Vallarga by name.',
+        '"I read the committee\'s last statement to sixty people in the Arrabal and nobody breathed." The secretary is glowing and pretending it is the lamplight.',
       ],
       [
-        '"My professor asked me today who writes our pamphlets. I said: the future. He didn\'t laugh." Mira laughs enough for both of them.',
-        'Mira has started keeping an archive. "Someone has to remember this right," she says, and you realize she expects to win.',
+        '"My father asked me who writes our leaflets. I told him: the ones who will run the ministries." He did not laugh. The secretary laughs enough for both of them.',
+        'The JSU has started an archive — dues books, photographs, the minutes of everything. "Someone has to remember this correctly," the secretary says, and you realize the youth expect to win.',
       ],
     ],
     reactions: {
-      agitate: '"Every wall in the university quarter by morning. Give us six hours." Mira is already gone.',
-      organize: '"Study circles we can do. Study circles we were born for." Mira\'s people fan out by faculty.',
-      lay_low: '"Quiet. Again." Mira folds the unprinted leaflet in half, in quarters, in eighths, until it disappears.',
+      agitate: '"Every wall in the university quarter by morning. Give the section six hours." The secretary is already gone down the stairs.',
+      organize: '"Study circles we can do. Study circles are what the JSU is for." The section fans out by faculty and by street.',
+      lay_low: '"Quiet. Again." The secretary folds the unprinted leaflet in half, in quarters, in eighths, until it disappears into a pocket.',
+      outreach: '"Half the conscripts in the Cuartel are our age. We play them at football on Sundays. You are asking us to do what we are already doing — so ask louder."',
     },
     departure:
-      'There\'s no letter and no scene — the students are simply gone, the way weather changes. Their printing den is swept clean, even the floor. On the door, in Mira\'s handwriting, a single line from one of your own early pamphlets — the one about never waiting. Within a month you hear them in other cities, under another name, faster and angrier and certain you were the lesson, not the teacher.',
+      'There is no scene and no letter — the youth are simply gone, the way weather changes. Their print room is swept clean, even the floor. On the door, in the section secretary\'s careful hand, one line from the alliance\'s own February manifesto — the one about never again waiting. Within the month you hear them working the same streets under their own banner, faster and surer and convinced you were the lesson, not the teacher. Carrillo\'s circular does not mention Vallarga again.',
     betrayal:
-      'Students talk. Not to the police — at parties, in letters home, to lovers. It reaches the police anyway. It always does.',
+      'The young talk. Not to the Brigada Social — at dances, in letters to cousins doing their service, across café tables. It reaches the Brigada Social anyway. It always does.',
   },
 };
 

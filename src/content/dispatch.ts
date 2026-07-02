@@ -12,35 +12,35 @@ export function composeDispatch(prev: GameState, next: GameState): string | unde
 
   const refused = turnLog.find((e) => e.kind === 'refusal');
   if (refused) {
-    clauses.push('Word is already moving faster than you can write it down.');
+    clauses.push('A unit has broken with its officers — word is moving through the barracks faster than the wire can carry it.');
   }
 
   const legitimacyDelta = next.resources.legitimacy - prev.resources.legitimacy;
   if (legitimacyDelta >= 5) {
-    clauses.push('The city is listening to you in a way it wasn\'t last week.');
+    clauses.push('Vallarga is listening to the alliance in a way it wasn\'t last week.');
   } else if (legitimacyDelta <= -5) {
-    clauses.push('The story is slipping — other people are telling it now, and not kindly.');
+    clauses.push('The story is slipping — the right\'s papers are telling it now, and not kindly.');
   }
 
   const sympathizersDelta = next.resources.sympathizers - prev.resources.sympathizers;
   if (sympathizersDelta >= 5) {
-    clauses.push('The rooms are filling — more chairs than you printed agendas for.');
+    clauses.push('The rooms are filling — more chairs in the athenaeums than you printed agendas for.');
   } else if (sympathizersDelta <= -5) {
     clauses.push('The rooms are emptying, quietly, the way rooms do when people decide a thing has already failed.');
   }
 
   if (prev.resources.heat < 55 && next.resources.heat >= 55) {
-    clauses.push('You are being watched in a new way now — the surveillance has a budget behind it.');
+    clauses.push('You are being watched in a new way now — the Brigada Social has been given a budget and a reason.');
   }
 
   if (prev.resources.grievance >= 25 && next.resources.grievance < 25) {
-    clauses.push('The window is closing. The city is getting used to things as they are, which is the regime\'s only real victory condition.');
+    clauses.push('The window is closing. The city is getting used to things as they are, which is all the old order has ever needed from a spring.');
   }
 
   const prevCohesion = cohesion(prev.factions);
   const nextCohesion = cohesion(next.factions);
   if (prevCohesion >= 20 && nextCohesion < 20) {
-    clauses.push('The coalition is held together with pins now, and everyone can feel where they are.');
+    clauses.push('The alliance is held together with pins now, and everyone can feel where they are.');
   }
 
   if (clauses.length === 0) return undefined;

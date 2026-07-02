@@ -9,21 +9,22 @@ import { createInitialState, type GameState, type Resources } from './engine/sta
 import { DECK } from './content/events';
 import { createIdeologyFactions, createIdeologyResources, IDEOLOGIES, type IdeologyId } from './content/ideologies';
 import { reactionLine, voiceLine, VOICES } from './content/factions';
-import { APPARATUS, finaleBeats, intelligenceLine } from './content/apparatus';
+import { APPARATUS, fallenBeats, finaleBeats, intelligenceLine } from './content/apparatus';
+import { RISING_DATE, turnDate } from './content/calendar';
 import { generateEpilogue } from './content/epilogue';
 import { composeDispatch } from './content/dispatch';
 import { EVENT_ART } from './content/art';
 import { CityMap } from './content/map';
 
-const SAVE_KEY = 'revolution-save-v1';
+const SAVE_KEY = 'revolution-save-v2';
 
 const RESOURCE_TOOLTIPS: Record<keyof Resources, string> = {
-  legitimacy: 'Narrative capital. Gates recruitment and feeds defection odds — it can compound for acts and crash overnight.',
-  cadre: 'The disciplined core. Quality over quantity, spent on operations and lost to raids.',
-  sympathizers: 'Mass support. Large and unreliable — it decays without attention and converts to cadre slowly.',
-  materiel: 'Money, presses, safehouses. The boring layer that actually wins; most failed runs die here.',
-  heat: 'The regime\'s attention. Past 70, raids come.',
-  grievance: 'The open window. When it closes, the revolution is over whether you noticed or not.',
+  legitimacy: 'Standing. Gates recruitment and feeds the barracks arithmetic — it can compound for months and crash overnight.',
+  cadre: 'The disciplined core: the militants everything actually runs on. Spent on operations, lost to arrests.',
+  sympathizers: 'The base. Large and unreliable — it decays without attention and converts to cadre slowly.',
+  materiel: 'Dues, presses, the comedores\' stores. The boring layer that actually wins; most failed springs die here.',
+  heat: 'The Brigada Social\'s attention. Past 70, the searches come.',
+  grievance: 'The open window. When the city gets used to things as they are, the spring is over whether you noticed or not.',
 };
 
 const COHESION_TOOLTIP =
@@ -40,19 +41,19 @@ const RESOURCE_LABELS: Record<keyof Resources, string> = {
 
 const STATUS_TEXT: Record<GameState['status'], string> = {
   active: '',
-  decapitated: 'Decapitated — the regime broke the cadre. The movement is finished.',
-  irrelevant: 'Irrelevant — the window closed. Material conditions stabilized without you.',
-  split: 'Split — what remains is no longer a coalition. It is a grudge with a mailing list.',
-  cascade: 'Cascade — the garrisons are refusing orders. The regime is falling.',
-  fallen: 'The rising has taken the city. What was built here goes under, holding its lists.',
+  decapitated: 'Broken — the arrests reached the center. Vallarga will meet July without its committee.',
+  irrelevant: 'Demobilized — the spring passed and the alliance became a letterhead. The 19th of July will find this city unorganized.',
+  split: 'Split — what remains of the alliance is no longer a coalition. It is a grudge with a mailing list, and July is coming.',
+  cascade: 'The rising has failed in Vallarga. The city is held — and the war begins.',
+  fallen: 'The rising has taken Vallarga. What was built here goes under, holding its lists.',
 };
 
 const ACTION_LABELS: Record<ActionType, string> = {
   organize: 'Organize',
   agitate: 'Agitate',
-  fundraise: 'Fundraise',
-  lay_low: 'Lay low',
-  outreach: 'Outreach',
+  fundraise: 'Dues & Funds',
+  lay_low: 'Go Quiet',
+  outreach: 'Work the Barracks',
 };
 
 /**
@@ -101,6 +102,23 @@ function scenarioState(): GameState | undefined {
         resources: { ...base.resources, legitimacy: 75, heat: 60 },
         flags: ['strike-called'],
         pendingEventId: 'picket-massacre',
+      };
+    case 'rising-won':
+      // Two days before the rising, apparatus eroded: the test, winnable.
+      return {
+        ...base,
+        turn: 42,
+        resources: { ...base.resources, legitimacy: 85, heat: 50, cadre: 16, sympathizers: 70 },
+        flags: ['mutual-aid', 'garrison-contacts', 'garrison-outreach', 'officers-letter', 'sotelo'],
+        units: base.units.map((u) => ({ ...u, loyalty: 10 })),
+      };
+    case 'rising-lost':
+      // Two days before the rising, apparatus untouched: history as it went.
+      return {
+        ...base,
+        turn: 42,
+        resources: { ...base.resources, legitimacy: 40, heat: 30 },
+        flags: ['sotelo'],
       };
     case 'eve':
       // The endgame, without the 40-turn replay: standing earned, units
@@ -171,9 +189,9 @@ function makeGame(seed: number, ideology: IdeologyId) {
 }
 
 const IDEOLOGY_HINTS: Record<IdeologyId, string> = {
-  populist: 'Sympathizers 60 · Cadre 6 · Cohesion polarized',
-  vanguard: 'Sympathizers 20 · Cadre 18 · Cohesion tight',
-  religious: 'Sympathizers 35 · Cadre 10 · Legitimacy 40, no students',
+  populist: 'Sympathizers 60 · Cadre 6 · Coalition polarized',
+  vanguard: 'Sympathizers 20 · Cadre 18 · Coalition tight',
+  religious: 'Sympathizers 35 · Cadre 10 · Standing 40, no faístas',
 };
 
 export function App() {
@@ -270,14 +288,16 @@ export function App() {
   if (screen === 'title') {
     return (
       <div id="title">
-        <h1>Revolution</h1>
+        <h1>The Spanish Spring</h1>
         <p>
-          You manage a revolutionary movement's commitment and visibility — not its
-          buildings or its armies. Every turn spends people: organizing, agitating,
-          raising money, going quiet, or reaching the officers who might one day refuse
-          an order. You win when the garrisons stand aside, a tipping point you spend the
-          whole game setting up. Every path there has a price, and the morning after
-          keeps the receipt.
+          Vallarga, 19 February 1936. The Popular Front has won the elections; the
+          generals have begun to count their regiments. You chair the coordinating
+          committee of the city's Alianza Obrera through the five months between the
+          amnesty and the rising — organizing, agitating, holding a fractious coalition
+          together, and working on the men who will be ordered into the streets on the
+          19th of July. History keeps that appointment whether you are ready or not.
+          Most cities lost. Every path to being ready has a price, and the war that
+          begins either way keeps the receipt.
         </p>
         <div class="ideology-cards">
           {(Object.keys(IDEOLOGIES) as IdeologyId[]).map((id) => {
@@ -319,7 +339,12 @@ export function App() {
     <>
       <div id="dispatch">
         <h1>Revolution</h1>
-        <p>Turn {state.turn}</p>
+        <p>
+          {turnDate(state.turn)} · week {Math.floor(state.turn / 2) + 1} of the spring
+        </p>
+        {state.turn >= 38 && state.status === 'active' && (
+          <p class="reaction">Every road out of this spring leads to {RISING_DATE}.</p>
+        )}
         {lastDispatch && !isOver && <p class="dispatch-line">{lastDispatch}</p>}
         {departures.map((e) => (
           <p class="departure" key={e.detail}>
@@ -363,6 +388,12 @@ export function App() {
         )}
         {state.status === 'cascade' &&
           finaleBeats(state.units).map((beat, i) => (
+            <p class="departure" key={i}>
+              {beat}
+            </p>
+          ))}
+        {state.status === 'fallen' &&
+          fallenBeats(state.units).map((beat, i) => (
             <p class="departure" key={i}>
               {beat}
             </p>

@@ -1,7 +1,7 @@
 {
-  "name": "Revolution",
-  "short_name": "Revolution",
-  "description": "A strategy game about how movements rise, win, and devour themselves.",
+  "name": "The Spanish Spring",
+  "short_name": "Sp. Spring",
+  "description": "Vallarga, February-July 1936: hold the city when the rising comes.",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#f4f1ea",
