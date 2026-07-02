@@ -253,3 +253,19 @@ writing gets tested against real play from milestone 2 onward, not bolted on at 
   prose is written against a moving format.
 - **Balance opacity.** Emergent systems hide degenerate strategies. Mitigation: the headless
   simulator is a milestone-1 deliverable, not an afterthought.
+
+---
+
+## Reflavor: The Spanish Spring (post-first-playable)
+
+The game was re-set into Spain, February–July 1936 — Vallarga, an invented composite
+industrial port, from the Popular Front's victory to the military rising — with heavy
+structural inspiration from *Red Autumn*: a real dated calendar (turn = half-week,
+turn 0 = 19 Feb, turn 43 = 19 Jul), **scheduled history** (real national events fire
+as cards on their real dates, with priority over the random deck), and a **fixed-date
+climax** (the rising resolves at turn 43 through the loyalty system, with contagion in
+the hour; `fallen` joins the loss states). Losing to history is the default (~75-80%
+even for strong play). All internal ids, mechanics, and the promise-ledger epilogue
+carry over; the debts now become what they historically became. Real organizations and
+figures (CNT/PCE/UGT–PSOE; Prieto, Durruti, Largo Caballero, Carrillo) voiced per the
+documented record; the war begins either way, and the epilogue keeps the receipt.

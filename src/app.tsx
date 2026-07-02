@@ -103,6 +103,15 @@ function scenarioState(): GameState | undefined {
         flags: ['strike-called'],
         pendingEventId: 'picket-massacre',
       };
+    case 'mayday':
+      // The May Day scheduled card, mid-spring state.
+      return {
+        ...base,
+        turn: 20,
+        resources: { ...base.resources, legitimacy: 58, sympathizers: 62, heat: 30 },
+        flags: ['mutual-aid'],
+        pendingEventId: 'may-day',
+      };
     case 'rising-won':
       // Two days before the rising, apparatus eroded: the test, winnable.
       return {
@@ -338,7 +347,7 @@ export function App() {
   return (
     <>
       <div id="dispatch">
-        <h1>Revolution</h1>
+        <h1>Vallarga</h1>
         <p>
           {turnDate(state.turn)} · week {Math.floor(state.turn / 2) + 1} of the spring
         </p>
