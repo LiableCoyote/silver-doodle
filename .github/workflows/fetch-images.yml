@@ -2,8 +2,8 @@ name: Fetch historical images
 
 # Manual, one-time authoring tool. Runs on GitHub's open-internet runners
 # (this game's dev environment is egress-blocked from Wikimedia). Fetches
-# the public-domain images named in scripts/image-manifest.ts, license-gates
-# them, duotone-preps them with sharp, writes credits, regenerates the
+# the public-domain images listed in scripts/image-manifest.json, license-
+# gates them, duotone-preps them with sharp, writes credits, regenerates the
 # registry, and commits the result — which triggers the normal deploy.
 on:
   workflow_dispatch:
@@ -31,11 +31,9 @@ jobs:
           if git diff --cached --quiet; then
             echo "No image changes to commit."
           else
-            git commit -m "Fetch public-domain historical imagery
-
-Downloaded, license-gated, and duotone-prepped via the fetch-images
-workflow; see public/img/CREDITS.md for per-image sources and licenses.
-
-https://claude.ai/code/session_01NT6Xq5hkY7GKr3hkW3M9Uk"
+            git commit \
+              -m "Fetch public-domain historical imagery" \
+              -m "Downloaded, license-gated, and duotone-prepped via the fetch-images workflow; see public/img/CREDITS.md for per-image sources and licenses." \
+              -m "https://claude.ai/code/session_01NT6Xq5hkY7GKr3hkW3M9Uk"
             git push
           fi
