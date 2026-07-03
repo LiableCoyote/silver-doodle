@@ -1,0 +1,41 @@
+name: Fetch historical images
+
+# Manual, one-time authoring tool. Runs on GitHub's open-internet runners
+# (this game's dev environment is egress-blocked from Wikimedia). Fetches
+# the public-domain images named in scripts/image-manifest.ts, license-gates
+# them, duotone-preps them with sharp, writes credits, regenerates the
+# registry, and commits the result — which triggers the normal deploy.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm i --no-save sharp
+      - run: node scripts/fetch-images.mjs
+      - name: Commit fetched images
+        run: |
+          git config user.name "Claude"
+          git config user.email "noreply@anthropic.com"
+          git add public/img src/content/imagery.generated.ts
+          if git diff --cached --quiet; then
+            echo "No image changes to commit."
+          else
+            git commit -m "Fetch public-domain historical imagery
+
+Downloaded, license-gated, and duotone-prepped via the fetch-images
+workflow; see public/img/CREDITS.md for per-image sources and licenses.
+
+https://claude.ai/code/session_01NT6Xq5hkY7GKr3hkW3M9Uk"
+            git push
+          fi

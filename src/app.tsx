@@ -15,6 +15,9 @@ import { generateEpilogue } from './content/epilogue';
 import { composeDispatch } from './content/dispatch';
 import { EVENT_ART } from './content/art';
 import { CityMap } from './content/map';
+import { DuotoneDefs } from './content/duotone';
+import { eventRef, Figure, heroRef, portraitRef, unitRef } from './content/imagery';
+import { CorpsPlaceholder, FigurePlaceholder, HeroScene, OrgEmblem } from './content/portraits';
 
 const SAVE_KEY = 'revolution-save-v2';
 
@@ -297,7 +300,9 @@ export function App() {
   if (screen === 'title') {
     return (
       <div id="title">
+        <DuotoneDefs />
         <h1>The Spanish Spring</h1>
+        <Figure imageRef={heroRef()} fallback={<HeroScene />} className="hero" />
         <p>
           Vallarga, 19 February 1936. The Popular Front has won the elections; the
           generals have begun to count their regiments. You chair the coordinating
@@ -313,7 +318,12 @@ export function App() {
             const def = IDEOLOGIES[id];
             return (
               <div class="faction ideology-card" key={id}>
-                <div class="faction-name">{def.name}</div>
+                <div class="faction-name">
+                  <span class="org-emblem">
+                    <OrgEmblem id={id} />
+                  </span>
+                  {def.name}
+                </div>
                 <p class="faction-line">{def.blurb}</p>
                 <p class="ideology-hint">{IDEOLOGY_HINTS[id]}</p>
                 <button onClick={() => begin(id)}>Begin</button>
@@ -346,6 +356,7 @@ export function App() {
 
   return (
     <>
+      <DuotoneDefs />
       <div id="dispatch">
         <h1>Vallarga</h1>
         <p>
@@ -369,14 +380,17 @@ export function App() {
         {lastOutcome && !isOver && <p class="event-outcome">{lastOutcome}</p>}
         {pendingCard && !isOver && (
           <div class="event-card" data-art={pendingCard.art}>
-            {pendingCard.art && EVENT_ART[pendingCard.art] && (
-              <div class="event-art">
-                {(() => {
-                  const Art = EVENT_ART[pendingCard.art!];
-                  return <Art />;
+            {(pendingCard.art && EVENT_ART[pendingCard.art]) || eventRef(pendingCard.id) ? (
+              <Figure
+                imageRef={eventRef(pendingCard.id)}
+                fallback={(() => {
+                  const key = pendingCard.art;
+                  const Art = key ? EVENT_ART[key] : undefined;
+                  return Art ? <Art /> : null;
                 })()}
-              </div>
-            )}
+                className="event-art"
+              />
+            ) : null}
             <p class="event-prose">{selectProse(pendingCard.prose, state)}</p>
             <div class="event-choices">
               {pendingCard.choices.map((choice) => {
@@ -463,12 +477,19 @@ export function App() {
       <div id="coalition">
         {voices.map(({ faction, line }) => (
           <div class={`faction faction-${faction.id}`} key={faction.id}>
-            <div class="faction-name">
-              {VOICES[faction.id].name} · {VOICES[faction.id].title}
-            </div>
-            <div class="faction-line">{line}</div>
-            <div class="bar mood-bar">
-              <span style={{ width: `${faction.mood}%` }} />
+            <Figure
+              imageRef={portraitRef(faction.id)}
+              fallback={<FigurePlaceholder id={faction.id} />}
+              className="portrait"
+            />
+            <div class="faction-body">
+              <div class="faction-name">
+                {VOICES[faction.id].name} · {VOICES[faction.id].title}
+              </div>
+              <div class="faction-line">{line}</div>
+              <div class="bar mood-bar">
+                <span style={{ width: `${faction.mood}%` }} />
+              </div>
             </div>
           </div>
         ))}
@@ -481,8 +502,16 @@ export function App() {
         <div id="apparatus">
           {state.units.map((unit) => (
             <div class={`unit ${unit.refused ? 'unit-refused' : ''}`} key={unit.id}>
-              <div class="unit-name">{APPARATUS[unit.id].name}</div>
-              <div class="unit-line">{intelligenceLine(unit)}</div>
+              <Figure
+                imageRef={unitRef(unit.id)}
+                fallback={<CorpsPlaceholder id={unit.id} />}
+                className="corps-photo"
+                duotoneOverride={unit.refused ? 'hardliner' : 'ink'}
+              />
+              <div class="unit-body">
+                <div class="unit-name">{APPARATUS[unit.id].name}</div>
+                <div class="unit-line">{intelligenceLine(unit)}</div>
+              </div>
             </div>
           ))}
         </div>
