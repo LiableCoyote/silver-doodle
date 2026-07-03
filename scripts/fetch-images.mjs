@@ -4,13 +4,16 @@
  * egress is policy-blocked from Wikimedia, so nothing here runs locally or
  * in the deploy build.
  *
- * For each manifest entry: query the Commons API for the file's URL and
- * license; reject anything not public-domain / CC0 / CC-BY; download;
- * process with sharp (crop to aspect, resize, grayscale + normalise +
- * gentle contrast) into public/img/**; then write public/img/CREDITS.md,
- * public/img/CREDITS.json, and regenerate src/content/imagery.generated.ts.
+ * For each manifest entry it resolves a usable file by trying the candidate
+ * File: titles in order, then a Commons File-namespace search — taking the
+ * first result whose license is public-domain / CC0 / CC-BY. Anything else
+ * is rejected (never committed). The chosen image is processed with sharp
+ * (crop to aspect, resize, grayscale + normalise + gentle contrast) into
+ * public/img/**, then it writes public/img/CREDITS.{md,json} and
+ * regenerates src/content/imagery.generated.ts.
  *
- * Requires: node >= 18 (global fetch), `sharp` (dev-dep). Usage: node scripts/fetch-images.mjs
+ * Requires: node >= 18 (global fetch), `sharp` (installed by the workflow).
+ * Usage: node scripts/fetch-images.mjs
  */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -21,20 +24,13 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const API = 'https://commons.wikimedia.org/w/api.php';
 const UA = 'silver-doodle-image-fetch/1.0 (educational game; PD imagery only)';
 
-// License short-names we accept. The gate is substring-insensitive.
+// License short-names we accept (case-insensitive substring match).
 const LICENSE_ALLOW = ['public domain', 'pd-', 'cc0', 'cc-by', 'cc by'];
+const RASTER = /\.(jpe?g|png|tiff?)$/i;
+const MAX_BYTES = 25 * 1024 * 1024;
 
-// Parse the manifest (TS) without a compiler: pull the MANIFEST array items.
 function loadManifest() {
-  const src = readFileSync(join(ROOT, 'scripts/image-manifest.ts'), 'utf8');
-  const body = src.slice(src.indexOf('MANIFEST'));
-  const entries = [];
-  const re = /id:\s*'([^']+)',\s*surface:\s*'([^']+)',\s*commonsFile:\s*'([^']+)',\s*crop:\s*\[(\d+),\s*(\d+)\]/g;
-  let m;
-  while ((m = re.exec(body))) {
-    entries.push({ id: m[1], surface: m[2], commonsFile: m[3], crop: [Number(m[4]), Number(m[5])] });
-  }
-  return entries;
+  return JSON.parse(readFileSync(join(ROOT, 'scripts/image-manifest.json'), 'utf8')).entries;
 }
 
 const SIZES = {
@@ -45,24 +41,69 @@ const SIZES = {
 };
 const DIRS = { portrait: 'portraits', unit: 'corps', event: 'events', hero: 'hero' };
 
-async function imageInfo(file) {
-  const url = `${API}?action=query&format=json&prop=imageinfo&iiprop=url|extmetadata&titles=${encodeURIComponent(file)}`;
-  const res = await fetch(url, { headers: { 'User-Agent': UA } });
-  if (!res.ok) throw new Error(`API ${res.status}`);
-  const data = await res.json();
-  const pages = data?.query?.pages ?? {};
-  const page = Object.values(pages)[0];
-  const info = page?.imageinfo?.[0];
-  if (!info) throw new Error('no imageinfo (file missing?)');
-  const md = info.extmetadata ?? {};
+function licenseOk(license) {
+  const l = (license || '').toLowerCase();
+  return LICENSE_ALLOW.some((a) => l.includes(a));
+}
+
+function parseInfo(info) {
+  const md = info?.extmetadata ?? {};
   const license = (md.LicenseShortName?.value ?? md.License?.value ?? '').toString();
   const author = (md.Artist?.value ?? '').toString().replace(/<[^>]+>/g, '').trim();
   return { fileUrl: info.url, descUrl: info.descriptionurl, license, author };
 }
 
-function licenseOk(license) {
-  const l = license.toLowerCase();
-  return LICENSE_ALLOW.some((a) => l.includes(a));
+async function apiJson(params) {
+  const res = await fetch(`${API}?${params}`, { headers: { 'User-Agent': UA } });
+  if (!res.ok) throw new Error(`API ${res.status}`);
+  return res.json();
+}
+
+/** A candidate File: title → resolved {fileUrl,license,...} or null. */
+async function tryTitle(title) {
+  const data = await apiJson(
+    `action=query&format=json&prop=imageinfo&iiprop=url|extmetadata|mime&titles=${encodeURIComponent(title)}`,
+  );
+  const page = Object.values(data?.query?.pages ?? {})[0];
+  const info = page?.imageinfo?.[0];
+  if (!info?.url || !RASTER.test(info.url)) return null;
+  const parsed = parseInfo(info);
+  return licenseOk(parsed.license) ? { title: page.title ?? title, ...parsed } : null;
+}
+
+/** Commons File-namespace search → first PD raster, or null. */
+async function trySearch(term) {
+  const data = await apiJson(
+    `action=query&format=json&generator=search&gsrnamespace=6&gsrlimit=8&gsrsearch=${encodeURIComponent(term)}&prop=imageinfo&iiprop=url|extmetadata|mime`,
+  );
+  const pages = Object.values(data?.query?.pages ?? {});
+  for (const page of pages) {
+    const info = page?.imageinfo?.[0];
+    if (!info?.url || !RASTER.test(info.url)) continue;
+    const parsed = parseInfo(info);
+    if (licenseOk(parsed.license)) return { title: page.title, ...parsed };
+  }
+  return null;
+}
+
+async function resolve(entry) {
+  for (const title of entry.candidates ?? []) {
+    try {
+      const hit = await tryTitle(title);
+      if (hit) return { ...hit, route: `candidate:${title}` };
+    } catch (e) {
+      /* try next */
+    }
+  }
+  if (entry.search) {
+    try {
+      const hit = await trySearch(entry.search);
+      if (hit) return { ...hit, route: `search:${entry.search}` };
+    } catch (e) {
+      /* fall through */
+    }
+  }
+  return null;
 }
 
 async function main() {
@@ -77,14 +118,15 @@ async function main() {
 
   for (const entry of manifest) {
     try {
-      const info = await imageInfo(entry.commonsFile);
-      if (!licenseOk(info.license)) {
-        console.warn(`SKIP ${entry.id}: license "${info.license}" not in allowlist`);
+      const hit = await resolve(entry);
+      if (!hit) {
+        console.warn(`SKIP ${entry.id}: no PD candidate or search result`);
         continue;
       }
-      const res = await fetch(info.fileUrl, { headers: { 'User-Agent': UA } });
+      const res = await fetch(hit.fileUrl, { headers: { 'User-Agent': UA } });
       if (!res.ok) throw new Error(`download ${res.status}`);
       const buf = Buffer.from(await res.arrayBuffer());
+      if (buf.byteLength > MAX_BYTES) throw new Error(`too large (${buf.byteLength})`);
 
       const [w, h] = SIZES[entry.surface];
       const rel = `img/${DIRS[entry.surface]}/${entry.id}.webp`;
@@ -104,8 +146,14 @@ async function main() {
       else if (entry.surface === 'event') generated.events[entry.id] = rel;
       else if (entry.surface === 'hero') generated.hero = rel;
 
-      credits.push({ id: entry.id, file: entry.commonsFile, source: info.descUrl, author: info.author || 'Unknown', license: info.license });
-      console.log(`OK   ${entry.id} <- ${entry.commonsFile} [${info.license}]`);
+      credits.push({
+        id: entry.id,
+        file: hit.title,
+        source: hit.descUrl,
+        author: hit.author || 'Unknown',
+        license: hit.license,
+      });
+      console.log(`OK   ${entry.id} <- ${hit.title} [${hit.license}] (${hit.route})`);
     } catch (err) {
       console.warn(`SKIP ${entry.id}: ${err.message}`);
     }
@@ -120,9 +168,7 @@ async function main() {
     'All images below are used under public-domain, CC0, or CC-BY terms, sourced from',
     'Wikimedia Commons and processed (cropped, grayscaled, duotone-prepped) for this game.',
     '',
-    ...credits.map(
-      (c) => `- **${c.id}** — [${c.file}](${c.source}) · ${c.author} · ${c.license}`,
-    ),
+    ...credits.map((c) => `- **${c.id}** — [${c.file}](${c.source}) · ${c.author} · ${c.license}`),
     '',
   ].join('\n');
   writeFileSync(join(ROOT, 'public/img/CREDITS.md'), md);

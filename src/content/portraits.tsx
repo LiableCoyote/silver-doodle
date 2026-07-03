@@ -74,24 +74,28 @@ function Corps({ children }: { children?: preact.ComponentChildren }) {
 }
 
 const CORPS_SILHOUETTES: Record<UnitId, ComponentType> = {
-  // Conscript — soft side-cap (gorrillo).
+  // Conscript — soft folded side-cap (gorrillo) worn at a slant.
   garrison: () => (
     <Corps>
-      <path d="M27 24 q13 -12 26 0 Z" fill={ACCENT} />
+      <path d="M25 25 q15 -9 30 -2 l-2 4 q-14 -5 -27 2 Z" fill={ACCENT} />
+      <path d="M25 25 q15 4 30 -2" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.5" />
     </Corps>
   ),
-  // Asalto — rounded helmet.
+  // Asalto — domed steel helmet with a front brim.
   police: () => (
     <Corps>
-      <path d="M27 26 a13 13 0 0 1 26 0 Z" fill={ACCENT} />
-      <rect x="26" y="25" width="28" height="3" fill={ACCENT} />
+      <path d="M28 27 a12 12 0 0 1 24 0 Z" fill={ACCENT} />
+      <rect x="25" y="26" width="30" height="3.5" rx="1.5" fill={ACCENT} />
+      <rect x="38" y="15" width="4" height="4" fill={ACCENT} />
     </Corps>
   ),
-  // Guardia Civil — the tricorn: flat crown, upturned back.
+  // Guardia Civil — the tricorn: low flat crown, sharply upturned rear point.
   guard: () => (
     <Corps>
-      <path d="M24 24 h32 l-4 -6 h-24 Z" fill={ACCENT} />
-      <path d="M24 24 q16 6 32 0 l-2 3 q-14 5 -28 0 Z" fill="currentColor" />
+      {/* rear wing sweeping up, the corps' signature silhouette */}
+      <path d="M20 27 Q40 10 60 27 Q54 22 40 21 Q30 21 24 25 Z" fill={ACCENT} />
+      {/* flat brim across the brow */}
+      <path d="M22 27 Q40 33 58 27 L57 30 Q40 35 23 30 Z" fill="currentColor" />
     </Corps>
   ),
 };

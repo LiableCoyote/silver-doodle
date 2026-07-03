@@ -1,0 +1,103 @@
+{
+  "_comment": "Public-domain image targets for scripts/fetch-images.mjs (run via the manual fetch-images GitHub Action; this dev environment is egress-blocked from Wikimedia). For each subject the script tries the candidate File: titles in order, then falls back to a Commons File-namespace search, and HARD-FAILS anything whose license is not PD/CC0/CC-BY. Missing/rejected subjects keep their SVG placeholder. ids must match the imagery.generated.ts registry keys.",
+  "entries": [
+    {
+      "id": "moderates",
+      "surface": "portrait",
+      "candidates": ["File:Indalecio Prieto 1936.jpg", "File:Indalecio Prieto.jpg", "File:Indalecio Prieto Tuero.jpg", "File:Prieto 1931.jpg"],
+      "search": "Indalecio Prieto portrait",
+      "crop": [4, 5]
+    },
+    {
+      "id": "hardliners",
+      "surface": "portrait",
+      "candidates": ["File:Buenaventura Durruti.jpg", "File:Buenaventura Durruti 1936.jpg", "File:Durruti.jpg", "File:BuenaventuraDurruti.jpg"],
+      "search": "Buenaventura Durruti 1936",
+      "crop": [4, 5]
+    },
+    {
+      "id": "labor",
+      "surface": "portrait",
+      "candidates": ["File:Francisco Largo Caballero 1936.jpg", "File:Francisco Largo Caballero.jpg", "File:Largo Caballero.jpg", "File:Francisco Largo Caballero 1930s.jpg"],
+      "search": "Francisco Largo Caballero portrait",
+      "crop": [4, 5]
+    },
+    {
+      "id": "students",
+      "surface": "portrait",
+      "candidates": ["File:Santiago Carrillo 1937.jpg", "File:Santiago Carrillo joven.jpg", "File:Santiago Carrillo 1936.jpg", "File:Santiago Carrillo.jpg"],
+      "search": "Santiago Carrillo 1937",
+      "crop": [4, 5]
+    },
+    {
+      "id": "garrison",
+      "surface": "unit",
+      "candidates": ["File:Soldados republicanos 1936.jpg", "File:Milicianos 1936.jpg", "File:Infantería española 1936.jpg"],
+      "search": "soldados españoles 1936 infantería",
+      "crop": [16, 11]
+    },
+    {
+      "id": "police",
+      "surface": "unit",
+      "candidates": ["File:Guardias de Asalto.jpg", "File:Guardia de Asalto 1936.jpg", "File:Guardias de asalto Madrid.jpg"],
+      "search": "Guardia de Asalto 1936",
+      "crop": [16, 11]
+    },
+    {
+      "id": "guard",
+      "surface": "unit",
+      "candidates": ["File:Guardia Civil 1930s.jpg", "File:Guardia Civil tricornio.jpg", "File:Guardias civiles.jpg", "File:Guardia Civil España.jpg"],
+      "search": "Guardia Civil tricornio 1930",
+      "crop": [16, 11]
+    },
+    {
+      "id": "hero",
+      "surface": "hero",
+      "candidates": ["File:Manifestación Frente Popular 1936.jpg", "File:Frente Popular 1936.jpg", "File:Primero de Mayo 1936 Madrid.jpg", "File:Manifestación Madrid 1936.jpg"],
+      "search": "manifestación Frente Popular 1936 Madrid",
+      "crop": [64, 26]
+    },
+    {
+      "id": "amnesty-jails",
+      "surface": "event",
+      "candidates": ["File:Amnistía 1936.jpg", "File:Presos políticos amnistía 1936.jpg"],
+      "search": "amnistía presos febrero 1936",
+      "crop": [16, 9]
+    },
+    {
+      "id": "may-day",
+      "surface": "event",
+      "candidates": ["File:Primero de Mayo 1936 Madrid.jpg", "File:1 de mayo 1936.jpg", "File:Día del Trabajo 1936.jpg"],
+      "search": "primero de mayo 1936",
+      "crop": [16, 9]
+    },
+    {
+      "id": "cortes-dead",
+      "surface": "event",
+      "candidates": ["File:Cortes de la República 1936.jpg", "File:Congreso de los Diputados 1936.jpg"],
+      "search": "Cortes República Española 1936",
+      "crop": [16, 9]
+    },
+    {
+      "id": "castillo-murdered",
+      "surface": "event",
+      "candidates": ["File:José Castillo.jpg", "File:Teniente José Castillo.jpg"],
+      "search": "José Castillo teniente Asalto",
+      "crop": [16, 9]
+    },
+    {
+      "id": "sotelo-killed",
+      "surface": "event",
+      "candidates": ["File:José Calvo Sotelo.jpg", "File:Calvo Sotelo.jpg", "File:José Calvo Sotelo 1936.jpg"],
+      "search": "José Calvo Sotelo",
+      "crop": [16, 9]
+    },
+    {
+      "id": "construction-strike",
+      "surface": "event",
+      "candidates": ["File:Huelga de la construcción Madrid 1936.jpg", "File:Huelga 1936.jpg"],
+      "search": "huelga construcción Madrid 1936",
+      "crop": [16, 9]
+    }
+  ]
+}
